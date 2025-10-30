@@ -100,11 +100,7 @@ export const SymptomInput: React.FC<SymptomInputProps> = ({ onSearch, isLoading 
                     value={symptoms}
                     onChange={handleInputChange}
                     placeholder="E.g., headache, sore throat, insomnia..."
-                    className="w-full pl-4 pr-32 py-4 text-lg border-2 border-slate-300 dark:border-slate-600 rounded-full bg-card-light dark:bg-card-dark text-text-onCard-light dark:text-text-dark placeholder:text-subtle-onCard-light dark:placeholder:text-subtle-dark focus:ring-2 focus:ring-primary-light focus:border-primary-light transition duration-300"
-                    style={{
-                        WebkitMaskImage: 'linear-gradient(to right, black 0%, black calc(100% - 130px), transparent 100%)',
-                        maskImage: 'linear-gradient(to right, black 0%, black calc(100% - 130px), transparent 100%)'
-                    }}
+                    className="w-full pl-4 pr-32 py-4 text-lg border-2 border-slate-300 dark:border-slate-600 rounded-full bg-card-light dark:bg-card-dark text-text-onCard-light dark:text-text-dark placeholder:text-subtle-onCard-light dark:placeholder:text-subtle-dark focus:ring-2 focus:ring-primary-light focus:border-primary-light transition duration-300 truncate"
                     disabled={isLoading}
                 />
                 <div className="absolute inset-y-0 right-2 flex items-center space-x-1">
