@@ -1,29 +1,29 @@
-output "cloudfront_domain_name" {
-  description = "CloudFront distribution domain name"
-  value       = aws_cloudfront_distribution.frontend.domain_name
+output "storage_bucket_name" {
+  description = "Cloud Storage bucket name for frontend"
+  value       = google_storage_bucket.frontend.name
 }
 
-output "cloudfront_distribution_id" {
-  description = "CloudFront distribution ID"
-  value       = aws_cloudfront_distribution.frontend.id
+output "load_balancer_ip" {
+  description = "Load balancer static IP address"
+  value       = google_compute_global_address.frontend.address
 }
 
-output "s3_bucket_name" {
-  description = "S3 bucket name for frontend"
-  value       = aws_s3_bucket.frontend.id
+output "load_balancer_url" {
+  description = "Load balancer HTTPS URL"
+  value       = "https://${google_compute_global_address.frontend.address}"
 }
 
-output "api_gateway_url" {
-  description = "API Gateway endpoint URL"
-  value       = "${aws_api_gateway_stage.prod.invoke_url}/remedies"
+output "cloud_run_service_url" {
+  description = "Cloud Run API service URL"
+  value       = google_cloud_run_service.api.status[0].url
 }
 
-output "lambda_function_name" {
-  description = "Lambda function name"
-  value       = aws_lambda_function.api.function_name
+output "firestore_database_id" {
+  description = "Firestore database identifier"
+  value       = google_firestore_database.default.name
 }
 
-output "dynamodb_table_name" {
-  description = "DynamoDB table name"
-  value       = aws_dynamodb_table.remedies_cache.name
+output "frontend_website_url" {
+  description = "Frontend website URL (once DNS is configured)"
+  value       = "https://${google_compute_global_address.frontend.address}"
 }

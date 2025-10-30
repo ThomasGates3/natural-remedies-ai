@@ -1,4 +1,8 @@
+import express from "express";
 import { GoogleGenAI, Type } from "@google/genai";
+
+const app = express();
+const PORT = process.env.PORT || 8080;
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
@@ -33,33 +37,29 @@ const remedySchema = {
   required: ["name", "description", "instructions", "timeframe", "precautions", "background", "ratings", "pros", "cons"]
 };
 
-export const handler = async (event) => {
-  const headers = {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type"
-  };
+// Middleware
+app.use(express.json());
 
-  // Handle CORS preflight
-  if (event.requestContext?.http?.method === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({ message: "OK" })
-    };
-  }
+// CORS headers
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+// Remedies endpoint
+app.post("/api/remedies", async (req, res) => {
   try {
-    const body = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-    const { symptoms } = body;
+    const { symptoms } = req.body;
 
     if (!symptoms || !symptoms.trim()) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: "symptoms parameter is required" })
-      };
+      return res.status(400).json({ error: "symptoms parameter is required" });
     }
 
     const response = await ai.models.generateContent({
@@ -91,18 +91,15 @@ IMPORTANT SAFETY RULES:
     const jsonText = response.text.trim();
     const parsedResponse = JSON.parse(jsonText);
 
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(parsedResponse)
-    };
+    res.status(200).json(parsedResponse);
 
   } catch (error) {
     console.error("Error:", error);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: "Failed to fetch remedies from Gemini API" })
-    };
+    res.status(500).json({ error: "Failed to fetch remedies from Gemini API" });
   }
-};
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

@@ -11,8 +11,8 @@ export const getRemedies = async (symptoms: string): Promise<Remedy[]> => {
             return await getRemediesDirectFromGemini(symptoms);
         }
 
-        // In production, use Lambda backend via API Gateway
-        const response = await fetch(`${API_ENDPOINT}/remedies`, {
+        // In production, use Cloud Run backend
+        const response = await fetch(`${API_ENDPOINT}/api/remedies`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

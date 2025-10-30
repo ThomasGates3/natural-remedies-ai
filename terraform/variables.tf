@@ -1,23 +1,44 @@
-variable "environment" {
-  description = "Environment name (dev, staging, prod)"
+variable "gcp_project_id" {
+  description = "GCP Project ID"
   type        = string
-  default     = "dev"
 }
 
-variable "region" {
-  description = "AWS region"
+variable "gcp_region" {
+  description = "GCP Region"
   type        = string
-  default     = "us-east-1"
-}
-
-variable "gemini_api_key" {
-  description = "Gemini API Key for Lambda environment"
-  type        = string
-  sensitive   = true
+  default     = "us-east1"
 }
 
 variable "project_name" {
   description = "Project name for resource naming"
   type        = string
   default     = "natural-remedies-ai"
+}
+
+variable "environment" {
+  description = "Environment (dev, staging, prod)"
+  type        = string
+  default     = "dev"
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.environment)
+    error_message = "Environment must be dev, staging, or prod."
+  }
+}
+
+variable "gemini_api_key" {
+  description = "Google Gemini API Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "container_image" {
+  description = "Container image for Cloud Run"
+  type        = string
+  default     = "gcr.io/cloud-builders/gke-deploy"
+}
+
+variable "domain_name" {
+  description = "Custom domain name (optional)"
+  type        = string
+  default     = ""
 }
