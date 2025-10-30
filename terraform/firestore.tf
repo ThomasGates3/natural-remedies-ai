@@ -35,8 +35,3 @@ resource "google_firestore_index" "remedies_cache" {
 # TTL Policy for auto-deletion (Cloud Firestore handles TTL via client-side deletion)
 # Note: Firestore doesn't have automatic TTL like DynamoDB, but we can use document timestamp
 # and implement deletion in the Lambda function or via Cloud Tasks
-
-output "firestore_database_id" {
-  value       = google_firestore_database.default.name
-  description = "Firestore database identifier"
-}
