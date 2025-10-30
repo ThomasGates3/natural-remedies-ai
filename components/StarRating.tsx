@@ -8,7 +8,7 @@ interface StarRatingProps {
     size?: 'sm' | 'md';
 }
 
-export const StarRating: React.FC<StarRatingProps> = ({
+export const StarRating: React.FC<StarRatingProps> = React.memo(({
     rating,
     score,
     label,
@@ -45,4 +45,4 @@ export const StarRating: React.FC<StarRatingProps> = ({
             </div>
         </div>
     );
-};
+});

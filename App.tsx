@@ -8,52 +8,27 @@ import { Disclaimer } from './components/Disclaimer';
 import { Remedy, HistoryItem } from './types';
 import { getRemedies } from './services/apiService';
 import { DiscoverPanel } from './components/DiscoverPanel';
+import { useLocalStorage } from './hooks/useLocalStorage';
+
+const getInitialTheme = (): 'light' | 'dark' => {
+    if (typeof window === 'undefined') return 'light';
+    const stored = window.localStorage.getItem('theme');
+    if (stored === 'dark' || stored === 'light') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
 
 const App: React.FC = () => {
-    const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-        if (typeof window !== 'undefined' && window.localStorage) {
-            const storedTheme = window.localStorage.getItem('theme');
-            if (storedTheme === 'dark' || storedTheme === 'light') {
-                return storedTheme;
-            }
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                return 'dark';
-            }
-        }
-        return 'light';
-    });
-
+    const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', getInitialTheme());
     const [remedies, setRemedies] = useState<Remedy[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [history, setHistory] = useState<HistoryItem[]>(() => {
-        if (typeof window !== 'undefined' && window.localStorage) {
-            const savedHistory = window.localStorage.getItem('remedyHistory');
-            return savedHistory ? JSON.parse(savedHistory) : [];
-        }
-        return [];
-    });
-    const [favorites, setFavorites] = useState<Remedy[]>(() => {
-        if (typeof window !== 'undefined' && window.localStorage) {
-            const savedFavorites = window.localStorage.getItem('remedyFavorites');
-            return savedFavorites ? JSON.parse(savedFavorites) : [];
-        }
-        return [];
-    });
-    
+    const [history, setHistory] = useLocalStorage<HistoryItem[]>('remedyHistory', []);
+    const [favorites, setFavorites] = useLocalStorage<Remedy[]>('remedyFavorites', []);
+
     useEffect(() => {
         document.documentElement.classList.remove('light', 'dark');
         document.documentElement.classList.add(theme);
-        localStorage.setItem('theme', theme);
     }, [theme]);
-
-    useEffect(() => {
-        localStorage.setItem('remedyHistory', JSON.stringify(history));
-    }, [history]);
-
-    useEffect(() => {
-        localStorage.setItem('remedyFavorites', JSON.stringify(favorites));
-    }, [favorites]);
 
     const handleSearch = useCallback(async (symptoms: string) => {
         if (!symptoms.trim()) return;

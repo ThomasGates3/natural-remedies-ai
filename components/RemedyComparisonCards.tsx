@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Remedy } from '../types';
 import { ChevronDownIcon, ChevronUpIcon } from './icons/ActionIcons';
-import { StarRating } from './StarRating';
+import { RatingRow } from './RatingRow';
 
 interface RemedyComparisonCardsProps {
     remedies: Remedy[];
@@ -45,45 +45,11 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
 
                         {/* Ratings Grid */}
                         <div className="p-4 flex-grow space-y-3">
-                            <div>
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-semibold text-subtle-onCard-light dark:text-subtle-dark">Accessibility</span>
-                                    <span className="text-xs text-blue-500">🔵</span>
-                                </div>
-                                <StarRating rating={remedy.ratings.accessibility} size="sm" />
-                            </div>
-
-                            <div>
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-semibold text-subtle-onCard-light dark:text-subtle-dark">Ease of Use</span>
-                                    <span className="text-xs text-green-500">🟢</span>
-                                </div>
-                                <StarRating rating={remedy.ratings.easeOfUse} size="sm" />
-                            </div>
-
-                            <div>
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-semibold text-subtle-onCard-light dark:text-subtle-dark">Effectiveness</span>
-                                    <span className="text-xs text-orange-500">🟠</span>
-                                </div>
-                                <StarRating rating={remedy.ratings.effectiveness} size="sm" />
-                            </div>
-
-                            <div>
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-semibold text-subtle-onCard-light dark:text-subtle-dark">Speed of Relief</span>
-                                    <span className="text-xs text-red-500">🔴</span>
-                                </div>
-                                <StarRating rating={remedy.ratings.speedOfRelief} size="sm" />
-                            </div>
-
-                            <div>
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-semibold text-subtle-onCard-light dark:text-subtle-dark">Safety Profile</span>
-                                    <span className="text-xs text-purple-500">💜</span>
-                                </div>
-                                <StarRating rating={remedy.ratings.safetyProfile} size="sm" />
-                            </div>
+                            <RatingRow label="Accessibility" icon="🔵" rating={remedy.ratings.accessibility} />
+                            <RatingRow label="Ease of Use" icon="🟢" rating={remedy.ratings.easeOfUse} />
+                            <RatingRow label="Effectiveness" icon="🟠" rating={remedy.ratings.effectiveness} />
+                            <RatingRow label="Speed of Relief" icon="🔴" rating={remedy.ratings.speedOfRelief} />
+                            <RatingRow label="Safety Profile" icon="💜" rating={remedy.ratings.safetyProfile} />
                         </div>
 
                         {/* Pros/Cons Quick View */}
