@@ -2,7 +2,7 @@ import React from 'react';
 import { Remedy } from '../types';
 import { RemedyCard, RemedyCardSkeleton } from './RemedyCard';
 import { BookIcon } from './icons/LeafIcon';
-import { ComparisonTable } from './ComparisonTable';
+import { RemedyComparisonCards } from './RemedyComparisonCards';
 
 interface RemedyListProps {
     remedies: Remedy[];
@@ -60,7 +60,11 @@ export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, err
             </div>
             
             <div className="mt-12">
-                 <ComparisonTable remedies={remedies} />
+                 <RemedyComparisonCards
+                     remedies={remedies}
+                     toggleFavorite={toggleFavorite}
+                     isFavorite={isFavorite}
+                 />
             </div>
         </div>
     );
