@@ -1,0 +1,12 @@
+# Terraform Variables Example
+# Copy this file to terraform.tfvars and fill in your values
+# NOTE: terraform.tfvars is in .gitignore and will NOT be committed
+
+environment   = "dev"
+project_name  = "natural-remedies-ai"
+
+# NEVER put sensitive values here - pass via command line instead:
+# terraform apply -var="gemini_api_key=YOUR_ACTUAL_KEY"
+# terraform apply -var="gcp_project_id=your-project-id"
+# terraform apply -var="gcp_region=us-east1"
+# terraform apply -var="container_image=us-east1-docker.pkg.dev/your-project/docker-repo/natural-remedies-ai-api:latest"
