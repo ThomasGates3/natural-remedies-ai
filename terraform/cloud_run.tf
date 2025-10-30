@@ -28,8 +28,8 @@ resource "google_cloud_run_v2_service" "api" {
       }
 
       env {
-        name  = "GEMINI_API_KEY"
-        value = var.gemini_api_key
+        name  = "GEMINI_API_KEY_SECRET"
+        value = "projects/${data.google_project.project.number}/secrets/gemini-api-key/versions/latest"
       }
 
       env {

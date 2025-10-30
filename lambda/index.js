@@ -1,15 +1,32 @@
 import express from "express";
 import { GoogleGenAI, Type } from "@google/genai";
+import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const projectId = process.env.GCP_PROJECT_ID;
+const secretName = process.env.GEMINI_API_KEY_SECRET || `projects/${projectId}/secrets/gemini-api-key/versions/latest`;
 
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  throw new Error("GEMINI_API_KEY environment variable not set");
-}
+let ai;
 
-const ai = new GoogleGenAI({ apiKey });
+// Initialize Secret Manager and Gemini AI
+const initializeAI = async () => {
+  try {
+    const secretClient = new SecretManagerServiceClient();
+    const [version] = await secretClient.accessSecretVersion({ name: secretName });
+    const apiKey = version.payload.data.toString();
+    ai = new GoogleGenAI({ apiKey });
+  } catch (error) {
+    console.error("Failed to fetch API key from Secret Manager:", error);
+    throw new Error("Failed to initialize Gemini AI");
+  }
+};
+
+// Initialize on startup
+initializeAI().catch(error => {
+  console.error("Initialization error:", error);
+  process.exit(1);
+});
 
 const remedySchema = {
   type: Type.OBJECT,

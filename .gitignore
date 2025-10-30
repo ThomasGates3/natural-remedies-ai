@@ -10,15 +10,34 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+
+# Environment & Secrets - NEVER commit these
 *.local
+.env
 .env.local
+.env.*.local
+.env.prod
+.env.production
+*.key
+*.pem
+secrets.json
+credentials.json
 claude.local.md
+
+# Terraform state & secrets
 terraform/terraform.tfvars
 terraform/.terraform
 terraform/.terraform.lock.hcl
 terraform/terraform.tfstate*
+terraform/.terraform.tfvars
+
+# Build artifacts
 lambda.zip
 lambda/node_modules
+
+# Docker artifacts
+docker-compose.override.yml
+.docker/config.json
 
 # Editor directories and files
 .vscode/*
