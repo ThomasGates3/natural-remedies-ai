@@ -1,0 +1,8 @@
+
+{
+  "name": "Natural Remedies AI",
+  "description": "An AI-powered web application that provides natural health remedy recommendations based on user-inputted symptoms. It features voice input, detailed remedy information, and a multi-dimensional rating system.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
