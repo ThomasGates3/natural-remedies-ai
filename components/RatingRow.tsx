@@ -3,7 +3,7 @@ import { StarRating } from './StarRating';
 
 interface RatingRowProps {
     label: string;
-    icon: string;
+    icon?: string;
     rating: number;
 }
 
@@ -11,7 +11,7 @@ export const RatingRow: React.FC<RatingRowProps> = React.memo(({ label, icon, ra
     <div>
         <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-semibold text-subtle-onCard-light dark:text-subtle-dark">{label}</span>
-            <span className="text-xs">{icon}</span>
+            {icon && <span className="text-xs">{icon}</span>}
         </div>
         <StarRating rating={rating} size="sm" />
     </div>

@@ -45,11 +45,11 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
 
                         {/* Ratings Grid */}
                         <div className="p-4 flex-grow space-y-3">
-                            <RatingRow label="Accessibility" icon="🔵" rating={remedy.ratings.accessibility} />
-                            <RatingRow label="Ease of Use" icon="🟢" rating={remedy.ratings.easeOfUse} />
-                            <RatingRow label="Effectiveness" icon="🟠" rating={remedy.ratings.effectiveness} />
-                            <RatingRow label="Speed of Relief" icon="🔴" rating={remedy.ratings.speedOfRelief} />
-                            <RatingRow label="Safety Profile" icon="💜" rating={remedy.ratings.safetyProfile} />
+                            <RatingRow label="Accessibility" rating={remedy.ratings.accessibility} />
+                            <RatingRow label="Ease of Use" rating={remedy.ratings.easeOfUse} />
+                            <RatingRow label="Effectiveness" rating={remedy.ratings.effectiveness} />
+                            <RatingRow label="Speed of Relief" rating={remedy.ratings.speedOfRelief} />
+                            <RatingRow label="Safety Profile" rating={remedy.ratings.safetyProfile} />
                         </div>
 
                         {/* Pros/Cons Quick View */}
