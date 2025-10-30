@@ -35,7 +35,7 @@ export default {
       },
       secondary: '#f97316',
       background: {
-        light: '#FFFBEF',
+        light: '#F5E6D3',
         dark: '#1a2e27'
       },
       card: {
