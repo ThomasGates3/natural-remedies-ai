@@ -13,7 +13,7 @@ export const FavoritesPanel: React.FC<FavoritesPanelProps> = ({ favorites, toggl
         <div className="bg-card-light dark:bg-card-dark p-4 rounded-xl shadow-lg border border-slate-200/20 dark:border-slate-700 text-text-onCard-light dark:text-text-dark">
             <h3 className="text-xl font-bold mb-4 flex items-center">
                 <BookIcon className="w-6 h-6 mr-2 text-primary" />
-                Favorite Remedies
+                Book of Remedies
             </h3>
             {favorites.length === 0 ? (
                 <p className="text-subtle-onCard-light dark:text-subtle-dark text-sm">Click the book icon on a remedy to save it here.</p>

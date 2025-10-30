@@ -18,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, setTheme }) => {
                 <div className="flex justify-between items-center py-4">
                     <div className="flex items-center space-x-3">
                         <BookIcon className="h-8 w-8 text-primary" />
-                        <span className="text-2xl font-bold text-text-onCard-light dark:text-text-dark">RemedyBook</span>
+                        <span className="text-2xl font-bold text-text-onCard-light dark:text-text-dark">Natural Remedies AI</span>
                     </div>
                     <button
                         onClick={toggleTheme}
