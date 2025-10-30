@@ -1,9 +1,17 @@
 import { Remedy, GeminiRemedyResponse } from '../types';
+import { getRemediesDirectFromGemini } from './geminiService';
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000/api';
+const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const USE_DIRECT_API = !API_ENDPOINT; // Fall back to direct Gemini API if no backend endpoint
 
 export const getRemedies = async (symptoms: string): Promise<Remedy[]> => {
     try {
+        // In development without a backend, use direct Gemini API
+        if (USE_DIRECT_API) {
+            return await getRemediesDirectFromGemini(symptoms);
+        }
+
+        // In production, use Lambda backend via API Gateway
         const response = await fetch(`${API_ENDPOINT}/remedies`, {
             method: 'POST',
             headers: {
@@ -21,6 +29,6 @@ export const getRemedies = async (symptoms: string): Promise<Remedy[]> => {
 
     } catch (error) {
         console.error("Error fetching remedies from API:", error);
-        throw new Error("Failed to communicate with the API. Please ensure the backend is running.");
+        throw new Error("Failed to communicate with the API. Please ensure the backend is running or add VITE_API_ENDPOINT to .env.local.");
     }
 };

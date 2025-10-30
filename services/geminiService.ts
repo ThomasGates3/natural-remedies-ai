@@ -35,7 +35,7 @@ const remedySchema = {
     required: ["name", "description", "instructions", "timeframe", "precautions", "background", "ratings", "pros", "cons"]
 };
 
-export const getRemedies = async (symptoms: string): Promise<Remedy[]> => {
+export const getRemediesDirectFromGemini = async (symptoms: string): Promise<Remedy[]> => {
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
