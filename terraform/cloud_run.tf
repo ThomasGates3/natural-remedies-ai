@@ -4,13 +4,6 @@ resource "google_service_account" "cloudrun" {
   display_name = "Cloud Run Service Account"
 }
 
-# IAM Role: Cloud Run can access Firestore
-resource "google_project_iam_member" "cloudrun_firestore" {
-  project = var.gcp_project_id
-  role    = "roles/datastore.user"
-  member  = "serviceAccount:${google_service_account.cloudrun.email}"
-}
-
 # Cloud Run Service
 resource "google_cloud_run_v2_service" "api" {
   name     = "${var.project_name}-api-${var.environment}"
@@ -28,18 +21,13 @@ resource "google_cloud_run_v2_service" "api" {
       }
 
       env {
-        name  = "GEMINI_API_KEY_SECRET"
-        value = "projects/${data.google_project.project.number}/secrets/gemini-api-key/versions/latest"
+        name  = "GEMINI_API_KEY"
+        value = var.gemini_api_key
       }
 
       env {
         name  = "ENVIRONMENT"
         value = var.environment
-      }
-
-      env {
-        name  = "GCP_PROJECT_ID"
-        value = var.gcp_project_id
       }
     }
 

@@ -5,6 +5,7 @@ set -e
 PROJECT_NAME="natural-remedies-ai"
 ENVIRONMENT="${1:-dev}"
 GCP_PROJECT_ID="${2:-$(gcloud config get-value project)}"
+GEMINI_API_KEY="${3:-${TF_VAR_gemini_api_key}}"
 GCP_REGION="us-east1"
 TERRAFORM_DIR="terraform"
 DIST_DIR="dist"
@@ -31,6 +32,16 @@ command -v terraform >/dev/null 2>&1 || error_exit "terraform not found"
 command -v gcloud >/dev/null 2>&1 || error_exit "gcloud CLI not found"
 command -v docker >/dev/null 2>&1 || error_exit "docker not found"
 echo -e "${GREEN}✓ All prerequisites installed${NC}\n"
+
+# 2. Check for API key
+echo -e "${BLUE}Checking API key...${NC}"
+if [ -z "$GEMINI_API_KEY" ]; then
+  error_exit "GEMINI_API_KEY not set. Use one of:
+  1. Pass as argument: ./deploy.sh dev natural-remedies-ai YOUR_API_KEY
+  2. Set environment variable: export TF_VAR_gemini_api_key=YOUR_API_KEY
+  3. For GitHub Actions: Set GitHub Secret GEMINI_API_KEY"
+fi
+echo -e "${GREEN}✓ API key configured${NC}\n"
 
 # 2. Build React app
 echo -e "${BLUE}1. Building React application...${NC}"
@@ -86,6 +97,7 @@ if ! terraform plan \
   -var="gcp_region=${GCP_REGION}" \
   -var="environment=${ENVIRONMENT}" \
   -var="container_image=${IMAGE_NAME}" \
+  -var="gemini_api_key=${GEMINI_API_KEY}" \
   -out=tfplan; then
   error_exit "Terraform plan failed. Check error messages above."
 fi

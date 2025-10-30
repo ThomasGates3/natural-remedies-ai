@@ -1,0 +1,108 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches: [main, polish]
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: natural-remedies-ai
+  GCP_REGION: us-east1
+  ENVIRONMENT: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Setup Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~> 1.0'
+
+      - name: Build React app
+        run: npm install && npm run build
+
+      - name: Configure Docker authentication
+        run: |
+          gcloud auth configure-docker us-east1-docker.pkg.dev
+
+      - name: Build and push Docker image
+        run: |
+          REGISTRY="us-east1-docker.pkg.dev"
+          IMAGE_NAME="${REGISTRY}/${GCP_PROJECT_ID}/docker-repo/natural-remedies-ai-api:${{ github.sha }}"
+          docker build -t ${IMAGE_NAME} .
+          docker push ${IMAGE_NAME}
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+
+      - name: Initialize Terraform
+        run: |
+          cd terraform
+          terraform init -upgrade
+
+      - name: Terraform Plan
+        run: |
+          cd terraform
+          terraform plan \
+            -var="gcp_project_id=${GCP_PROJECT_ID}" \
+            -var="gcp_region=${GCP_REGION}" \
+            -var="environment=${ENVIRONMENT}" \
+            -var="container_image=${IMAGE_NAME}" \
+            -var="gemini_api_key=${{ secrets.GEMINI_API_KEY }}" \
+            -out=tfplan
+
+      - name: Terraform Apply
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan
+
+      - name: Get deployment outputs
+        id: deploy_outputs
+        run: |
+          cd terraform
+          echo "bucket_name=$(terraform output -raw storage_bucket_name)" >> $GITHUB_OUTPUT
+          echo "cloud_run_url=$(terraform output -raw cloud_run_service_url)" >> $GITHUB_OUTPUT
+
+      - name: Upload frontend to Cloud Storage
+        run: |
+          gsutil -m rsync -r -d dist/ gs://${{ steps.deploy_outputs.outputs.bucket_name }}/
+
+      - name: Deployment Summary
+        run: |
+          echo "✓ Deployment Complete!"
+          echo "Environment: ${ENVIRONMENT}"
+          echo "Frontend Bucket: gs://${{ steps.deploy_outputs.outputs.bucket_name }}"
+          echo "Cloud Run API: ${{ steps.deploy_outputs.outputs.cloud_run_url }}"
+          echo "API Endpoint: ${{ steps.deploy_outputs.outputs.cloud_run_url }}/api/remedies"
+
+      - name: Create deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✓ Deployment successful!"
+          else
+            echo "✗ Deployment failed!"
+          fi
