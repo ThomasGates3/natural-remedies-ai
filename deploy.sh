@@ -82,10 +82,16 @@ cd ..
 gsutil -m rsync -r -d "$DIST_DIR" "gs://$BUCKET_NAME" >/dev/null 2>&1
 echo -e "${GREEN}✓ Frontend uploaded to Cloud Storage${NC}\n"
 
-# 8. Final summary
+# 8. Output endpoints
+echo -e "${BLUE}7. Deployment Complete${NC}\n"
+STORAGE_BUCKET=$(terraform output -raw storage_bucket_name)
 echo -e "${GREEN}=== Deployment Complete ===${NC}"
-echo -e "${GREEN}Application URL: https://${LOAD_BALANCER_IP}${NC}"
+echo -e "${GREEN}Frontend Bucket: ${STORAGE_BUCKET}${NC}"
+echo -e "${GREEN}Frontend URL: https://storage.googleapis.com/${STORAGE_BUCKET}/index.html${NC}"
 echo -e "${GREEN}Cloud Run API: ${CLOUD_RUN_URL}${NC}\n"
+echo -e "${BLUE}Next steps:${NC}"
+echo -e "${BLUE}1. Point your domain to Cloud Storage: gs://${STORAGE_BUCKET}${NC}"
+echo -e "${BLUE}2. Access Cloud Run API at: ${CLOUD_RUN_URL}/api/remedies${NC}\n"
 
 rm -f terraform/tfplan
 echo -e "${BLUE}Deployment finished successfully!${NC}"
