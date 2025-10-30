@@ -11,7 +11,7 @@ resource "google_secret_manager_secret" "gemini_api_key" {
   project   = var.gcp_project_id
 
   replication {
-    auto = {}
+    automatic = true
   }
 
   depends_on = [google_project_service.secret_manager]
