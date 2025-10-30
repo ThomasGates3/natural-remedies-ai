@@ -54,9 +54,11 @@ jobs:
         run: |
           REGISTRY="us-east1-docker.pkg.dev"
           IMAGE_NAME="${REGISTRY}/${GCP_PROJECT_ID}/docker-repo/natural-remedies-ai-api:${{ github.sha }}"
-          docker build -t ${IMAGE_NAME} .
+          LATEST_IMAGE="${REGISTRY}/${GCP_PROJECT_ID}/docker-repo/natural-remedies-ai-api:latest"
+          docker build -t ${IMAGE_NAME} -t ${LATEST_IMAGE} .
           docker push ${IMAGE_NAME}
-          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          docker push ${LATEST_IMAGE}
+          echo "IMAGE_NAME=${LATEST_IMAGE}" >> $GITHUB_ENV
 
       - name: Initialize Terraform
         run: |
