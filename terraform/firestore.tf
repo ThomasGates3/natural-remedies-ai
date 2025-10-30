@@ -14,24 +14,5 @@ resource "google_firestore_database" "default" {
   depends_on  = [google_project_service.firestore]
 }
 
-# Firestore Index for remedies_cache collection
-resource "google_firestore_index" "remedies_cache" {
-  project    = var.gcp_project_id
-  collection = "remedies_cache"
-
-  fields {
-    field_path = "symptom_hash"
-    order      = "ASCENDING"
-  }
-
-  fields {
-    field_path = "timestamp"
-    order      = "ASCENDING"
-  }
-
-  depends_on = [google_firestore_database.default]
-}
-
-# TTL Policy for auto-deletion (Cloud Firestore handles TTL via client-side deletion)
-# Note: Firestore doesn't have automatic TTL like DynamoDB, but we can use document timestamp
-# and implement deletion in the Lambda function or via Cloud Tasks
+# Note: Firestore indexes are not needed for Datastore Mode
+# TTL Policy: Firestore handles via client-side deletion or Cloud Tasks scheduled cleanup

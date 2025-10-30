@@ -65,14 +65,9 @@ gcloud artifacts repositories describe docker-repo --location=${GCP_REGION} 2>/d
 echo -e "${YELLOW}  Configuring Docker authentication...${NC}"
 gcloud auth configure-docker ${REGISTRY} --quiet
 
-echo -e "${YELLOW}  Building Docker image (this may take 1-2 minutes)...${NC}"
-if ! docker build -t ${IMAGE_NAME} .; then
-  error_exit "Docker build failed. Check error messages above."
-fi
-
-echo -e "${YELLOW}  Pushing Docker image to Artifact Registry...${NC}"
-if ! docker push ${IMAGE_NAME}; then
-  error_exit "Docker push failed. Check error messages above."
+echo -e "${YELLOW}  Building Docker image for linux/amd64 (this may take 1-2 minutes)...${NC}"
+if ! docker buildx build --platform linux/amd64 -t ${IMAGE_NAME} --push .; then
+  error_exit "Docker build/push failed. Check error messages above."
 fi
 echo -e "${GREEN}✓ Docker image built and pushed: ${IMAGE_NAME}${NC}\n"
 
