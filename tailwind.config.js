@@ -8,6 +8,9 @@ export default {
     "./services/**/*.{ts,tsx}",
   ],
   theme: {
+    fontFamily: {
+      sans: ['Lexend', 'system-ui', 'sans-serif']
+    },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
