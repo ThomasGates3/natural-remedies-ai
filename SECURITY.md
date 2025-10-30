@@ -5,7 +5,8 @@ This document outlines how API keys and secrets are managed in Natural Remedies 
 ## Overview
 
 - **Frontend**: Uses `VITE_GEMINI_API_KEY` from `.env.local` (dev only)
-- **Backend**: Fetches `GEMINI_API_KEY` from GCP Secret Manager at runtime
+- **Backend**: Uses `GEMINI_API_KEY` from environment variables
+- **GitHub Actions**: Uses encrypted GitHub Secrets (recommended for CI/CD)
 - **Git**: All secrets are in `.gitignore` and never committed
 
 ## Local Development
@@ -31,26 +32,38 @@ npm run dev
 
 ## Production Deployment
 
-### GCP Secret Manager
+### GitHub Actions Secrets (Recommended)
 
-The backend uses GCP Secret Manager for secure key storage:
+1. **Setup GitHub Secrets** in your repository settings:
+   - Go to Settings > Secrets and variables > Actions
+   - Add `GEMINI_API_KEY` with your actual API key
+   - Add `WIF_PROVIDER` for Workload Identity Federation
+   - Add `WIF_SERVICE_ACCOUNT` for GCP authentication
 
-1. **Secret Creation** (Terraform handles this automatically):
-```
-Name: gemini-api-key
-Value: (your actual API key)
-Replication: Automatic (global)
-```
+2. **Deployment Process**:
+   - Push to `main` branch → deploys to production
+   - Push to `polish` branch → deploys to dev
+   - Uses `.github/workflows/deploy.yml`
+   - GitHub Actions automatically injects `GEMINI_API_KEY`
 
-2. **Cloud Run Access**:
-- Service account automatically granted `roles/secretmanager.secretAccessor`
-- Key fetched at runtime via `@google-cloud/secret-manager`
-- Never exposed in logs or environment variables
+3. **Workload Identity Federation (WIF)**:
+   - No service account keys needed
+   - GitHub Actions obtains temporary GCP credentials
+   - Most secure option for CI/CD
 
-3. **Deployment Process**:
+### Local Deployment
+
+You can also deploy locally using one of these methods:
+
+**Option 1: Command line argument**
 ```bash
-# Set your API key as a Terraform variable
-terraform apply -var="gemini_api_key=YOUR_ACTUAL_KEY"
+./deploy.sh dev natural-remedies-ai YOUR_API_KEY
+```
+
+**Option 2: Environment variable**
+```bash
+export TF_VAR_gemini_api_key=YOUR_API_KEY
+./deploy.sh dev natural-remedies-ai
 ```
 
 ### Security Layers
@@ -66,16 +79,17 @@ terraform apply -var="gemini_api_key=YOUR_ACTUAL_KEY"
 - Frontend uses `VITE_` prefix (optional at runtime)
 - Only VITE_ prefixed vars exposed to browser
 
-✅ **Level 3: Runtime Protection**
-- Backend fetches key from Secret Manager at startup
-- Key never stored in memory longer than initialization
-- No keys in process environment after startup
+✅ **Level 3: Deployment Protection**
+- Local: API key passed via environment variable
+- GitHub Actions: Key stored in encrypted GitHub Secrets
+- Terraform: Key injected as variable (not logged)
+- Cloud Run: Key stored in environment (only during runtime)
 
-✅ **Level 4: GCP Protection**
-- Secrets encrypted at rest (Google managed)
-- Secrets encrypted in transit (HTTPS)
-- Audit logging for all secret access
-- Service account with minimal permissions
+✅ **Level 4: GitHub Actions Protection**
+- Secrets encrypted at rest
+- Secrets masked in workflow logs
+- Expires after workflow completion
+- Audit logs available in GitHub
 
 ## If You Leak a Key
 
