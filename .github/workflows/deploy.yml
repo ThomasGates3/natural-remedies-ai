@@ -60,6 +60,12 @@ jobs:
           docker push ${LATEST_IMAGE}
           echo "IMAGE_NAME=${LATEST_IMAGE}" >> $GITHUB_ENV
 
+      - name: Wait for image to be available
+        run: |
+          echo "Waiting for Docker image to be available in Artifact Registry..."
+          sleep 10
+          gcloud artifacts docker images describe us-east1-docker.pkg.dev/${GCP_PROJECT_ID}/docker-repo/natural-remedies-ai-api:latest
+
       - name: Initialize Terraform
         run: |
           cd terraform
