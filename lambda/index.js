@@ -4,13 +4,25 @@ import { GoogleGenAI, Type } from "@google/genai";
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+console.log(`Starting server on port ${PORT}`);
+console.log(`Environment: ${process.env.ENVIRONMENT || 'unknown'}`);
+console.log(`API Key configured: ${process.env.GEMINI_API_KEY ? 'yes' : 'no'}`);
+
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-  console.error("GEMINI_API_KEY environment variable not set");
+  console.error("CRITICAL: GEMINI_API_KEY environment variable not set");
+  console.error("Available env vars:", Object.keys(process.env).sort().join(', '));
   process.exit(1);
 }
 
-const ai = new GoogleGenAI({ apiKey });
+let ai;
+try {
+  ai = new GoogleGenAI({ apiKey });
+  console.log("✓ Gemini AI initialized successfully");
+} catch (error) {
+  console.error("Failed to initialize Gemini AI:", error);
+  process.exit(1);
+}
 
 const remedySchema = {
   type: Type.OBJECT,
@@ -101,6 +113,8 @@ IMPORTANT SAFETY RULES:
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✓ Server listening on 0.0.0.0:${PORT}`);
+  console.log(`✓ Health check: GET /health`);
+  console.log(`✓ API endpoint: POST /api/remedies`);
 });
