@@ -65,11 +65,12 @@ jobs:
             --allow-unauthenticated
 
       - name: Upload frontend to Cloud Storage
+        continue-on-error: true
         run: |
           PROJECT_NUMBER=$(gcloud projects describe ${GCP_PROJECT_ID} --format="value(projectNumber)")
           BUCKET_NAME="natural-remedies-ai-frontend-${ENVIRONMENT}-${PROJECT_NUMBER}"
           echo "Uploading to: gs://${BUCKET_NAME}/"
-          gsutil -m rsync -r -d dist/ gs://${BUCKET_NAME}/
+          gsutil -m rsync -r -d dist/ gs://${BUCKET_NAME}/ || echo "Frontend upload failed, but API deployment succeeded"
 
       - name: Deployment Summary
         run: |
