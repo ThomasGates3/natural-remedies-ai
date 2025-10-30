@@ -1,7 +1,7 @@
 # Service Account for Cloud Run
 resource "google_service_account" "cloudrun" {
-  account_id   = "${var.project_name}-cloudrun-${var.environment}"
-  display_name = "Cloud Run Service Account"
+  account_id   = "nrai-cloudrun-${var.environment}"
+  display_name = "Cloud Run Service Account - ${var.environment}"
 }
 
 # Cloud Run Service
