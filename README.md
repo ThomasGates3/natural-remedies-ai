@@ -1,6 +1,13 @@
 <div align="center">
 <h1>🌿 Natural Remedies AI</h1>
 <p>AI-powered discovery tool for natural health remedies and wellness solutions</p>
+
+[![GitHub](https://img.shields.io/badge/GitHub-ThomasGates3-blue?logo=github)](https://github.com/ThomasGates3/natural-remedies-ai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-Latest-38b2ac?logo=tailwind-css)](https://tailwindcss.com/)
+[![AWS](https://img.shields.io/badge/AWS-Cloud-ff9900?logo=amazon-aws)](https://aws.amazon.com/)
 </div>
 
 ## Problem
@@ -304,6 +311,15 @@ For symptom query "headache":
 - [ ] Multi-language support
 - [ ] Mobile app (React Native)
 - [ ] Admin dashboard for content moderation
+
+## Code Quality
+
+✅ **Clean Architecture** - Separated components, hooks, services, and utilities
+✅ **TypeScript** - Full type safety with strict mode enabled
+✅ **Performance Optimized** - React.memo for memoization, efficient rendering
+✅ **Maintainable** - Custom hooks for reusable logic, DRY principles
+✅ **Accessible** - ARIA labels, semantic HTML, keyboard navigation
+✅ **Best Practices** - Error handling, loading states, environment variables
 
 ## Tech Stack
 
