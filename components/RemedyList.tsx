@@ -16,7 +16,7 @@ export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, err
     if (isLoading) {
         return (
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold mb-4">Finding Remedies...</h2>
+                <h2 className="text-2xl font-bold mb-4 text-teal-900 dark:text-teal-100">Finding Remedies...</h2>
                 <RemedyCardSkeleton />
                 <RemedyCardSkeleton />
                 <RemedyCardSkeleton />
@@ -26,7 +26,7 @@ export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, err
 
     if (error) {
         return (
-            <div className="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 text-red-700 dark:text-red-200 p-4 rounded-md" role="alert">
+            <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-300 p-4 rounded-md" role="alert">
                 <p className="font-bold">An Error Occurred</p>
                 <p>{error}</p>
             </div>
@@ -35,10 +35,10 @@ export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, err
 
     if (remedies.length === 0) {
         return (
-            <div className="text-center py-16 px-6 bg-card-light dark:bg-card-dark rounded-lg text-text-onCard-light dark:text-text-dark">
-                <BookIcon className="h-16 w-16 mx-auto text-subtle-onCard-light dark:text-subtle-dark mb-4" />
+            <div className="text-center py-16 px-6 bg-white dark:bg-teal-900/40 rounded-lg text-teal-900 dark:text-teal-100 border border-teal-100 dark:border-teal-800">
+                <BookIcon className="h-16 w-16 mx-auto text-teal-600 dark:text-teal-400 mb-4" />
                 <h2 className="text-2xl font-semibold mb-2">Welcome to RemedyBook</h2>
-                <p className="text-subtle-onCard-light dark:text-subtle-dark max-w-md mx-auto">
+                <p className="text-teal-700 dark:text-teal-300 max-w-md mx-auto">
                     Enter your symptoms above to get personalized natural remedy recommendations from our AI assistant.
                 </p>
             </div>
@@ -47,7 +47,7 @@ export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, err
 
     return (
         <div>
-            <h2 className="text-3xl font-bold mb-6">AI-Powered Recommendations</h2>
+            <h2 className="text-3xl font-bold mb-6 text-teal-900 dark:text-teal-100">AI-Powered Recommendations</h2>
             <div className="space-y-6">
                 {remedies.map((remedy) => (
                     <RemedyCard
@@ -58,7 +58,7 @@ export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, err
                     />
                 ))}
             </div>
-            
+
             <div className="mt-12">
                  <RemedyComparisonCards
                      remedies={remedies}

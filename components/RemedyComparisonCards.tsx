@@ -25,20 +25,20 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
     };
 
     return (
-        <div className="bg-card-light dark:bg-card-dark text-text-onCard-light dark:text-text-dark p-6 rounded-xl shadow-lg border border-slate-200/20 dark:border-slate-700">
-            <h2 className="text-2xl font-bold mb-6 text-center">Remedy Comparison</h2>
+        <div className="bg-white dark:bg-teal-900/40 text-teal-900 dark:text-teal-100 p-6 rounded-xl shadow-lg border border-teal-100 dark:border-teal-800">
+            <h2 className="text-2xl font-bold mb-6 text-center text-teal-900 dark:text-teal-100">Remedy Comparison</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {remedies.map(remedy => (
                     <div
                         key={remedy.name}
-                        className="bg-slate-200/5 dark:bg-slate-800/30 rounded-lg border border-slate-200/20 dark:border-slate-700/50 overflow-hidden flex flex-col"
+                        className="bg-teal-50 dark:bg-teal-900/30 rounded-lg border border-teal-100 dark:border-teal-800 overflow-hidden flex flex-col"
                     >
                         {/* Card Header */}
-                        <div className="p-4 bg-slate-200/10 dark:bg-slate-900/50 border-b border-slate-200/20 dark:border-slate-700/50">
-                            <h3 className="font-bold text-lg text-primary dark:text-primary-light mb-2">
+                        <div className="p-4 bg-teal-100 dark:bg-teal-900/50 border-b border-teal-200 dark:border-teal-800">
+                            <h3 className="font-bold text-lg text-teal-700 dark:text-teal-300 mb-2">
                                 {remedy.name}
                             </h3>
-                            <p className="text-xs text-subtle-onCard-light dark:text-subtle-dark line-clamp-2">
+                            <p className="text-xs text-teal-700 dark:text-teal-300 line-clamp-2">
                                 {remedy.description}
                             </p>
                         </div>
@@ -54,11 +54,11 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
 
                         {/* Pros/Cons Quick View */}
                         {!expandedRemedy || expandedRemedy !== remedy.name ? (
-                            <div className="p-4 bg-slate-200/5 dark:bg-slate-800/20 border-t border-slate-200/20 dark:border-slate-700/50">
+                            <div className="p-4 bg-teal-50 dark:bg-teal-900/20 border-t border-teal-100 dark:border-teal-800">
                                 <div className="space-y-2">
                                     <div>
-                                        <h4 className="text-xs font-semibold text-green-600 dark:text-green-400 mb-1">Pros</h4>
-                                        <ul className="text-xs text-subtle-onCard-light dark:text-subtle-dark space-y-1">
+                                        <h4 className="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">Pros</h4>
+                                        <ul className="text-xs text-teal-700 dark:text-teal-300 space-y-1">
                                             {remedy.pros.slice(0, 2).map((pro, index) => (
                                                 <li key={index} className="flex">
                                                     <span className="mr-2">✓</span>
@@ -73,30 +73,30 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
 
                         {/* Expanded Details */}
                         {expandedRemedy === remedy.name && (
-                            <div className="p-4 bg-slate-200/5 dark:bg-slate-800/20 border-t border-slate-200/20 dark:border-slate-700/50 max-h-60 overflow-y-auto">
-                                <div className="space-y-4 text-xs text-subtle-onCard-light dark:text-subtle-dark">
+                            <div className="p-4 bg-teal-50 dark:bg-teal-900/20 border-t border-teal-100 dark:border-teal-800 max-h-60 overflow-y-auto">
+                                <div className="space-y-4 text-xs text-teal-700 dark:text-teal-300">
                                     <div>
-                                        <h4 className="font-semibold text-text-onCard-light dark:text-text-dark mb-1">Instructions</h4>
+                                        <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-1">Instructions</h4>
                                         <p className="whitespace-pre-wrap text-xs">{remedy.instructions}</p>
                                     </div>
 
                                     <div>
-                                        <h4 className="font-semibold text-text-onCard-light dark:text-text-dark mb-1">Timeframe</h4>
+                                        <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-1">Timeframe</h4>
                                         <p>{remedy.timeframe}</p>
                                     </div>
 
                                     <div>
-                                        <h4 className="font-semibold text-text-onCard-light dark:text-text-dark mb-1">Precautions</h4>
+                                        <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-1">Precautions</h4>
                                         <p className="whitespace-pre-wrap">{remedy.precautions}</p>
                                     </div>
 
                                     <div>
-                                        <h4 className="font-semibold text-text-onCard-light dark:text-text-dark mb-1">Background</h4>
+                                        <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-1">Background</h4>
                                         <p className="whitespace-pre-wrap">{remedy.background}</p>
                                     </div>
 
                                     <div>
-                                        <h4 className="font-semibold text-green-600 dark:text-green-400 mb-1">All Pros</h4>
+                                        <h4 className="font-semibold text-green-700 dark:text-green-400 mb-1">All Pros</h4>
                                         <ul className="space-y-1">
                                             {remedy.pros.map((pro, index) => (
                                                 <li key={index} className="flex">
@@ -108,7 +108,7 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
                                     </div>
 
                                     <div>
-                                        <h4 className="font-semibold text-red-600 dark:text-red-400 mb-1">Cons</h4>
+                                        <h4 className="font-semibold text-red-700 dark:text-red-400 mb-1">Cons</h4>
                                         <ul className="space-y-1">
                                             {remedy.cons.map((con, index) => (
                                                 <li key={index} className="flex">
@@ -123,13 +123,13 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
                         )}
 
                         {/* Card Footer */}
-                        <div className="p-4 bg-slate-200/10 dark:bg-slate-900/50 border-t border-slate-200/20 dark:border-slate-700/50 flex items-center justify-between">
+                        <div className="p-4 bg-teal-100 dark:bg-teal-900/50 border-t border-teal-200 dark:border-teal-800 flex items-center justify-between">
                             <button
                                 onClick={() => toggleFavorite(remedy)}
                                 className={`p-2 rounded-full transition-colors ${
                                     isFavorite(remedy)
-                                        ? 'bg-red-500/20 text-red-500'
-                                        : 'text-subtle-onCard-light dark:text-subtle-dark hover:bg-red-500/10'
+                                        ? 'bg-red-500/20 text-red-500 dark:text-red-400'
+                                        : 'text-teal-600 dark:text-teal-400 hover:bg-red-500/10'
                                 }`}
                                 aria-label={`${isFavorite(remedy) ? 'Remove from' : 'Add to'} Book of Remedies`}
                             >
@@ -137,7 +137,7 @@ export const RemedyComparisonCards: React.FC<RemedyComparisonCardsProps> = ({
                             </button>
                             <button
                                 onClick={() => toggleExpanded(remedy.name)}
-                                className="flex items-center gap-2 px-3 py-2 rounded-full bg-slate-200/20 dark:bg-slate-700/50 hover:bg-slate-200/30 dark:hover:bg-slate-700 transition-colors text-xs font-medium"
+                                className="flex items-center gap-2 px-3 py-2 rounded-full bg-teal-200 dark:bg-teal-800 hover:bg-teal-300 dark:hover:bg-teal-700 transition-colors text-xs font-medium text-teal-900 dark:text-teal-100"
                                 aria-label={expandedRemedy === remedy.name ? 'Hide details' : 'View details'}
                             >
                                 {expandedRemedy === remedy.name ? (
