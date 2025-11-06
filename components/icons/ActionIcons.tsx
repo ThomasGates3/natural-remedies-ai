@@ -96,3 +96,15 @@ export const BookOpenIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => 
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3.042.526m0 0A8.966 8.966 0 002.25 9m0 0v10.5A8.966 8.966 0 006 20.25m0 0a8.966 8.966 0 006-2.25m0 0v-10.5a9 9 0 016-2.25m0 0A8.966 8.966 0 0121.75 9" />
   </svg>
 );
+
+export const MenuIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+  </svg>
+);
+
+export const CloseIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);

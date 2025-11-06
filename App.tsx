@@ -33,6 +33,10 @@ const App: React.FC = () => {
         document.documentElement.classList.add(theme);
     }, [theme]);
 
+    const handleLogoClick = () => {
+        setHasSearched(false);
+    };
+
     const handleSearch = useCallback(async (symptoms: string) => {
         if (!symptoms.trim()) return;
 
@@ -73,7 +77,7 @@ const App: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-white dark:bg-teal-950 text-teal-900 dark:text-white font-sans transition-colors duration-300">
-            <Header theme={theme} setTheme={setTheme} />
+            <Header theme={theme} setTheme={setTheme} onLogoClick={handleLogoClick} />
 
             {!hasSearched ? (
                 <>
