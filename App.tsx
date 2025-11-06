@@ -5,6 +5,8 @@ import { RemedyList } from './components/RemedyList';
 import { HistoryPanel } from './components/HistoryPanel';
 import { FavoritesPanel } from './components/FavoritesPanel';
 import { Disclaimer } from './components/Disclaimer';
+import { LandingPage } from './components/LandingPage';
+import { Footer } from './components/Footer';
 import { Remedy, HistoryItem } from './types';
 import { getRemedies } from './services/apiService';
 import { DiscoverPanel } from './components/DiscoverPanel';
@@ -24,6 +26,7 @@ const App: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [history, setHistory] = useLocalStorage<HistoryItem[]>('remedyHistory', []);
     const [favorites, setFavorites] = useLocalStorage<Remedy[]>('remedyFavorites', []);
+    const [hasSearched, setHasSearched] = useState<boolean>(false);
 
     useEffect(() => {
         document.documentElement.classList.remove('light', 'dark');
@@ -33,6 +36,7 @@ const App: React.FC = () => {
     const handleSearch = useCallback(async (symptoms: string) => {
         if (!symptoms.trim()) return;
 
+        setHasSearched(true);
         setIsLoading(true);
         setError(null);
         setRemedies([]);
@@ -40,7 +44,7 @@ const App: React.FC = () => {
         try {
             const result = await getRemedies(symptoms);
             setRemedies(result);
-            
+
             const newHistoryItem: HistoryItem = { id: Date.now(), symptoms };
             setHistory(prevHistory => [newHistoryItem, ...prevHistory.filter(item => item.symptoms !== symptoms)].slice(0, 10));
 
@@ -68,44 +72,52 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans transition-colors duration-300">
+        <div className="min-h-screen bg-white dark:bg-teal-950 text-teal-900 dark:text-white font-sans transition-colors duration-300">
             <Header theme={theme} setTheme={setTheme} />
-            <main className="container mx-auto p-4 md:p-6 lg:p-8">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold text-primary dark:text-primary-light mb-2">Natural Remedies AI</h1>
-                    <p className="text-lg text-subtle-light dark:text-subtle-dark mb-8">
-                        Discover natural remedies for your symptoms, powered by AI.
-                    </p>
-                </div>
 
-                <SymptomInput onSearch={handleSearch} isLoading={isLoading} />
-                <Disclaimer />
+            {!hasSearched ? (
+                <>
+                    <LandingPage onSearch={handleSearch} isLoading={isLoading} />
+                    <Footer />
+                </>
+            ) : (
+                <>
+                    <main className="container mx-auto p-4 md:p-6 lg:p-8">
+                        <div className="max-w-4xl mx-auto text-center mb-8">
+                            <h1 className="text-4xl md:text-5xl font-bold text-teal-900 dark:text-white mb-2">Your Remedies</h1>
+                            <p className="text-lg text-teal-700 dark:text-teal-200">
+                                Results for your search
+                            </p>
+                        </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
-                    {/* Discover Panel on the left */}
-                    <div className="lg:col-span-3">
-                        <DiscoverPanel onSearch={handleSearch} />
-                    </div>
-                    {/* Main Content in the center */}
-                    <div className="lg:col-span-6">
-                        <RemedyList
-                            remedies={remedies}
-                            isLoading={isLoading}
-                            error={error}
-                            toggleFavorite={toggleFavorite}
-                            isFavorite={isFavorite}
-                        />
-                    </div>
-                    {/* Side Panels on the right */}
-                    <div className="lg:col-span-3 space-y-8">
-                         <FavoritesPanel favorites={favorites} toggleFavorite={toggleFavorite} />
-                         <HistoryPanel history={history} onSearch={handleSearch} />
-                    </div>
-                </div>
-            </main>
-            <footer className="text-center p-4 mt-8 text-subtle-light dark:text-subtle-dark border-t border-slate-200 dark:border-slate-800">
-              <p>&copy; {new Date().getFullYear()} Natural Remedies AI. For informational purposes only.</p>
-            </footer>
+                        <SymptomInput onSearch={handleSearch} isLoading={isLoading} />
+                        <Disclaimer />
+
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
+                            {/* Discover Panel on the left */}
+                            <div className="lg:col-span-3">
+                                <DiscoverPanel onSearch={handleSearch} />
+                            </div>
+                            {/* Main Content in the center */}
+                            <div className="lg:col-span-6">
+                                <RemedyList
+                                    remedies={remedies}
+                                    isLoading={isLoading}
+                                    error={error}
+                                    toggleFavorite={toggleFavorite}
+                                    isFavorite={isFavorite}
+                                />
+                            </div>
+                            {/* Side Panels on the right */}
+                            <div className="lg:col-span-3 space-y-8">
+                                 <FavoritesPanel favorites={favorites} toggleFavorite={toggleFavorite} />
+                                 <HistoryPanel history={history} onSearch={handleSearch} />
+                            </div>
+                        </div>
+                    </main>
+                    <Footer />
+                </>
+            )}
         </div>
     );
 };

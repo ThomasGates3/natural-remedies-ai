@@ -28,34 +28,25 @@ export default {
         700: '#334155',
         800: '#1e293b',
       },
+      teal: {
+        50: '#f0fdfa',
+        100: '#ccfbf1',
+        200: '#99f6e4',
+        300: '#5eead4',
+        400: '#2dd4bf',
+        500: '#14b8a6',
+        600: '#0d9488',
+        700: '#0f766e',
+        800: '#115e59',
+        900: '#134e4a',
+        950: '#0d3f3a',
+      },
       primary: {
         light: '#22c55e',
         DEFAULT: '#16a34a',
         dark: '#15803d'
       },
       secondary: '#f97316',
-      background: {
-        light: '#F5E6D3',
-        dark: '#1a2e27'
-      },
-      card: {
-        light: '#5C4033',
-        dark: '#203a31'
-      },
-      text: {
-        light: '#3D2B1F',
-        dark: '#FFFFFF',
-        onCard: {
-          light: '#F5F5DC'
-        }
-      },
-      subtle: {
-        light: '#6B4F4B',
-        dark: '#a7f3d0',
-        onCard: {
-          light: '#D2B48C'
-        }
-      }
     },
     extend: {}
   },
