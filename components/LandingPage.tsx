@@ -108,7 +108,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
       </section>
 
       {/* Trust Section */}
-      <section className="py-16 md:py-24 px-4 animate-fadeIn">
+      <section className="py-16 md:py-24 px-4 bg-gradient-to-b from-teal-50 via-teal-100 dark:from-teal-950 dark:via-teal-900 dark:to-teal-950 to-teal-200 animate-fadeIn">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-slideUp">
