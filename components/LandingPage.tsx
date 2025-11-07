@@ -1,5 +1,6 @@
 import React from 'react';
 import { ListIcon, BrainIcon, CheckCircleIcon } from './icons/ActionIcons';
+import { TrendingRemediesCarousel } from './TrendingRemediesCarousel';
 
 interface LandingPageProps {
   onSearch: (symptoms: string) => void;
@@ -50,6 +51,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
               </button>
             </div>
           </form>
+
+          {/* Trending Remedies Carousel */}
+          <TrendingRemediesCarousel onSearch={onSearch} />
         </div>
       </section>
 
