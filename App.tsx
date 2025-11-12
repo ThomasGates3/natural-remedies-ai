@@ -2,14 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { SymptomInput } from './components/SymptomInput';
 import { RemedyList } from './components/RemedyList';
-import { HistoryPanel } from './components/HistoryPanel';
-import { FavoritesPanel } from './components/FavoritesPanel';
 import { Disclaimer } from './components/Disclaimer';
 import { LandingPage } from './components/LandingPage';
 import { Footer } from './components/Footer';
 import { Remedy, HistoryItem } from './types';
 import { getRemedies } from './services/apiService';
 import { DiscoverPanel } from './components/DiscoverPanel';
+import { SidebarTabs } from './components/SidebarTabs';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
 const getInitialTheme = (): 'light' | 'dark' => {
@@ -113,9 +112,8 @@ const App: React.FC = () => {
                                 />
                             </div>
                             {/* Side Panels on the right */}
-                            <div className="lg:col-span-3 space-y-8">
-                                 <FavoritesPanel favorites={favorites} toggleFavorite={toggleFavorite} />
-                                 <HistoryPanel history={history} onSearch={handleSearch} />
+                            <div className="lg:col-span-3">
+                                 <SidebarTabs favorites={favorites} history={history} toggleFavorite={toggleFavorite} onSearch={handleSearch} />
                             </div>
                         </div>
                     </main>
