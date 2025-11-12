@@ -25,12 +25,13 @@ The project started as an AI Studio export - a basic React application connected
 Transforming the project into a production-ready, portfolio-quality application with enterprise patterns.
 
 **Key Improvements Completed:**
-- ✅ Serverless Lambda backend for API key protection
-- ✅ AWS infrastructure as code (Terraform)
-- ✅ CloudFront CDN for global distribution
-- ✅ S3 static website hosting
-- ✅ API Gateway REST endpoint with CORS
-- ✅ DynamoDB integration for caching
+- ✅ Serverless Cloud Run backend for API key protection
+- ✅ GCP infrastructure as code (Terraform)
+- ✅ Cloud CDN for global distribution
+- ✅ Cloud Storage static website hosting
+- ✅ Cloud Run REST endpoint with CORS
+- ✅ Firestore database for caching
+- ✅ Docker containerization
 - ✅ Automated deployment script
 - ✅ Comprehensive documentation
 - ✅ Security best practices implemented
@@ -44,8 +45,8 @@ Before (Risky):
 Frontend → Gemini API (key exposed)
 
 After (Secure):
-Frontend → CloudFront → API Gateway → Lambda → Gemini API
-           (cached)      (CORS)       (secret)
+Frontend → Cloud CDN → Cloud Run → Gemini API
+           (cached)      (secret)
 ```
 
 ### Phase 3: Portfolio Optimization
@@ -90,7 +91,7 @@ Features to implement after MVP is deployed and tested.
 - [ ] Shareable remedy lists
 
 #### 4b. Data Persistence (Q1 2025)
-- [ ] DynamoDB integration for server-side favorites
+- [ ] Firestore integration for server-side favorites
 - [ ] Cloud backup of user preferences
 - [ ] Cross-device synchronization
 - [ ] Export data in multiple formats (JSON, CSV, PDF)
@@ -157,13 +158,13 @@ Features to implement after MVP is deployed and tested.
 | Milestone | Status | Timeline | Notes |
 |-----------|--------|----------|-------|
 | Local Dev Setup | ✅ Done | Week 1 | All features working locally |
-| Lambda Backend | ✅ Done | Week 1 | Secure API key handling |
-| Terraform IaC | ✅ Done | Week 1 | Reproducible infrastructure |
-| Deploy Script | ✅ Done | Week 1 | Automated 5-minute deployment |
+| Cloud Run Backend | ✅ Done | Week 1 | Secure API key handling with Docker |
+| Terraform IaC | ✅ Done | Week 1 | Reproducible GCP infrastructure |
+| Deploy Script | ✅ Done | Week 1 | Automated 5-8 minute deployment |
 | Core Documentation | ✅ Done | Week 1 | README, deployment.md, roadmap, SECURITY.md |
 | UI/UX Design System | ✅ Done | Week 1 | Landing page, animations, theme consistency |
 | Build Verification | ✅ Done | Week 1 | Build passes, no errors |
-| Initial Dev Deployment | ⏳ Pending | Week 2 | Deploy to AWS dev environment |
+| Initial Dev Deployment | ⏳ Pending | Week 2 | Deploy to GCP dev environment |
 | Testing & QA | ⏳ Pending | Week 2 | Comprehensive testing |
 | Prod Deployment | ⏳ Pending | Week 2 | Switch to production URLs |
 | Portfolio Showcase | ⏳ Pending | Week 2 | Add to GitHub portfolio |
@@ -195,9 +196,9 @@ Features to implement after MVP is deployed and tested.
 ### Current (Will Address in Phase 4)
 1. **No User Auth** - Favorites and history are local-only (will add auth in Phase 4a)
 2. **No Data Persistence** - History and favorites cleared on localStorage reset
-3. **Single Region** - Deployed to us-east-1 only (will add multi-region in Phase 4)
+3. **Single Region** - Deployed to us-east1 only (will add multi-region in Phase 4)
 4. **No Rate Limiting** - Backend doesn't limit API calls (will add in Phase 4)
-5. **Limited API Caching** - DynamoDB caching not yet implemented (future optimization)
+5. **Limited API Caching** - Firestore caching not yet implemented (future optimization)
 
 ### By Design (Won't Address)
 1. **No Patient Records** - Educational tool only, not a medical system
@@ -211,13 +212,11 @@ Features to implement after MVP is deployed and tested.
 ```
 React Frontend (Vite)
        ↓
-CloudFront (CDN)
+Cloud CDN (CDN)
        ↓
-S3 (Static files)
+Cloud Storage (Static files)
        ↓
-API Gateway
-       ↓
-Lambda (Node.js)
+Cloud Run (Docker Container)
        ↓
 Gemini API
 ```
@@ -226,27 +225,25 @@ Gemini API
 ```
 React Frontend (Vite) + Auth
        ↓
-CloudFront (CDN)
+Cloud CDN (CDN)
        ↓
-S3 (Static files)
+Cloud Storage (Static files)
        ↓
-API Gateway
+Cloud Run (Docker Container)
        ↓
-Lambda (Node.js)
-       ↓
-DynamoDB (User data) + Gemini API + Redis (Cache)
+Firestore (User data) + Gemini API + Cloud Memorystore (Cache)
 ```
 
 ### Future Architecture (v3 with Mobile)
 ```
-Web Frontend → CloudFront
-Mobile App (React Native) → API Gateway
+Web Frontend → Cloud CDN
+Mobile App (React Native) → Cloud Endpoints
         ↓
-Lambda (Serverless functions)
+Cloud Run (Serverless functions)
         ↓
-DynamoDB (Scalable persistence)
+Firestore (Scalable persistence)
         ↓
-Elasticsearch (Search)
+Cloud Search (Search)
         ↓
 Gemini API + External APIs
 ```
@@ -260,8 +257,8 @@ Gemini API + External APIs
 - **Vite** 6.2.0 - Build tool
 - **@google/genai** 1.27.0 - AI integration
 
-### AWS Services (Current)
-- Lambda, API Gateway, S3, CloudFront, DynamoDB, IAM, CloudWatch
+### GCP Services (Current)
+- Cloud Run, Cloud Storage, Cloud CDN, Firestore, Artifact Registry, Cloud Build
 
 ### Planned Upgrades
 - Node 20+ for better performance

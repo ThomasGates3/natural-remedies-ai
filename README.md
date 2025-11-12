@@ -7,7 +7,7 @@
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-Latest-38b2ac?logo=tailwind-css)](https://tailwindcss.com/)
-[![AWS](https://img.shields.io/badge/AWS-Cloud-ff9900?logo=amazon-aws)](https://aws.amazon.com/)
+[![Google Cloud](https://img.shields.io/badge/Google%20Cloud-GCP-4285F4?logo=google-cloud)](https://cloud.google.com/)
 </div>
 
 ## Problem
@@ -51,8 +51,8 @@ Without quick access to organized remedy information, people waste time searchin
 ### Prerequisites
 
 - **Node.js** 18+ ([download](https://nodejs.org/))
-- **AWS Account** (for deployment)
-- **AWS CLI** configured ([setup guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html))
+- **Google Cloud Account** (for deployment)
+- **gcloud CLI** configured ([setup guide](https://cloud.google.com/sdk/docs/install))
 - **Terraform** installed ([download](https://www.terraform.io/downloads))
 - **Gemini API Key** ([get free key](https://ai.google.dev/))
 
@@ -74,28 +74,28 @@ npm run dev
 
 The app runs at `http://localhost:5173`
 
-### AWS Deployment (Fully Automated)
+### GCP Deployment (Fully Automated)
 
 ```bash
 # 1. Navigate to project directory
 cd natural-remedies-ai
 
-# 2. Ensure AWS credentials are configured
-aws sts get-caller-identity
+# 2. Ensure GCP credentials are configured
+gcloud auth application-default login
 
-# 3. Run deployment script (5 minutes)
+# 3. Run deployment script (5-8 minutes)
 chmod +x deploy.sh
-./deploy.sh
+./deploy.sh dev your-gcp-project-id your-gemini-api-key
 ```
 
 The script will:
 - Build React frontend
-- Package Lambda backend
+- Build and push Docker image to Artifact Registry
 - Deploy infrastructure with Terraform
-- Upload files to S3
-- Configure CloudFront CDN
+- Upload files to Cloud Storage
+- Configure Cloud CDN
 
-### AWS Deployment (Manual Step-by-Step)
+### GCP Deployment (Manual Step-by-Step)
 
 For detailed control, follow the [deployment.md](./deployment.md) guide.
 
@@ -104,11 +104,11 @@ For detailed control, follow the [deployment.md](./deployment.md) guide.
 After deployment:
 
 ```bash
-# Check CloudFront URL (from deploy.sh output)
-curl -I https://your-cloudfront-url.cloudfront.net
+# Check Cloud Run health endpoint (from deploy.sh output)
+curl https://your-cloud-run-url.run.app/health
 
 # Test API endpoint
-curl -X POST https://your-api-gateway-url/remedies \
+curl -X POST https://your-cloud-run-url.run.app/api/remedies \
   -H "Content-Type: application/json" \
   -d '{"symptoms":"headache"}'
 ```
@@ -151,35 +151,31 @@ curl -X POST https://your-api-gateway-url/remedies \
         ┌────────────┴─────────────┐
         │                          │
 ┌───────▼──────────────────────────▼──────────────────┐
-│              AWS CLOUD INFRASTRUCTURE                │
+│              GCP CLOUD INFRASTRUCTURE                │
 ├──────────────────────────────────────────────────────┤
 │                                                      │
 │  ┌─────────────────────────────────────────────┐   │
-│  │          CloudFront (CDN)                   │   │
-│  │    Caches & distributes frontend assets    │   │
+│  │      Cloud CDN (Content Delivery)           │   │
+│  │   Caches & distributes frontend assets     │   │
 │  └─────────────────────────────────────────────┘   │
 │              │                  │                   │
 │              ▼                  ▼                   │
 │  ┌──────────────────┐  ┌──────────────────┐      │
-│  │  S3 Static       │  │ API Gateway      │      │
-│  │  Website         │  │ (REST Endpoint)  │      │
+│  │ Cloud Storage    │  │ Cloud Run        │      │
+│  │ (Static Site)    │  │ (Serverless)     │      │
 │  │                  │  │                  │      │
-│  │ React App        │  └─────────┬────────┘      │
-│  │ (HTML/JS/CSS)    │            │                │
-│  └──────────────────┘            ▼                │
-│                          ┌──────────────────┐     │
-│                          │ Lambda Function  │     │
-│                          │ (Node.js)        │     │
-│                          │                  │     │
-│                          │ Gemini API       │     │
-│                          │ Wrapper          │     │
-│                          └────────┬─────────┘     │
-│                                   │                │
-│                          ┌────────▼─────────┐     │
-│                          │ DynamoDB Table   │     │
-│                          │ (Cache/History)  │     │
-│                          └──────────────────┘     │
-│                                                    │
+│  │ React App        │  │ Docker Container │      │
+│  │ (HTML/JS/CSS)    │  │ (Node.js)        │      │
+│  └──────────────────┘  │                  │      │
+│                        │ Gemini API       │      │
+│                        │ Client           │      │
+│                        └────────┬─────────┘      │
+│                                 │                │
+│                        ┌────────▼─────────┐     │
+│                        │ Firestore        │     │
+│                        │ (Database)       │     │
+│                        └──────────────────┘     │
+│                                                  │
 └──────────────────────────────────────────────────┘
         │                                │
         └────────────────┬───────────────┘
@@ -195,13 +191,13 @@ curl -X POST https://your-api-gateway-url/remedies \
 
 | Component | Purpose | Interaction |
 |-----------|---------|-------------|
-| **React Frontend** | User interface | Fetches remedies from Lambda via API Gateway |
-| **CloudFront** | Content delivery network | Caches static assets, serves frontend at edge |
-| **S3** | Static file hosting | Stores built React app (HTML, JS, CSS) |
-| **API Gateway** | REST API endpoint | Routes POST requests to Lambda function |
-| **Lambda** | Backend logic | Calls Gemini API, returns structured remedies |
+| **React Frontend** | User interface | Fetches remedies from Cloud Run API |
+| **Cloud CDN** | Content delivery network | Caches static assets, serves frontend at edge |
+| **Cloud Storage** | Static file hosting | Stores built React app (HTML, JS, CSS) |
+| **Cloud Run** | Serverless backend | Runs Docker container with Node.js API |
+| **Docker Container** | API runtime | Calls Gemini API, returns structured remedies |
 | **Gemini API** | AI engine | Generates remedy recommendations based on symptoms |
-| **DynamoDB** | Data persistence | Caches recent remedy queries (optional future use) |
+| **Firestore** | Database | Optional caching and data persistence |
 
 ### Data Flow
 
@@ -215,15 +211,15 @@ React App (localStorage for favorites/history)
 Fetch POST /api/remedies
         │
         ▼
-CloudFront (cache miss → forward to API Gateway)
+Cloud CDN (cache miss → forward to Cloud Run)
         │
         ▼
-API Gateway routes to Lambda
+Cloud Run service routes to Node.js
         │
         ▼
-Lambda receives symptoms
+Container receives symptoms
         │
-        ├─→ Check DynamoDB cache (optional)
+        ├─→ Check Firestore cache (optional)
         │
         └─→ Call Gemini API with structured prompt
         │
@@ -231,7 +227,7 @@ Lambda receives symptoms
 Gemini returns JSON (remedies with ratings)
         │
         ▼
-Lambda returns response with CORS headers
+Cloud Run returns response with CORS headers
         │
         ▼
 React displays remedies with comparisons
@@ -242,18 +238,18 @@ User saves to favorites/history (browser localStorage)
 
 ### Security & Compliance
 
-- **API Key Protection**: Gemini API key stored securely in Lambda environment variables, never exposed to frontend
-- **CORS Configured**: API Gateway CORS headers prevent unauthorized cross-origin requests
-- **HTTPS Only**: CloudFront enforces HTTPS for all traffic
-- **Encryption**: S3 bucket uses AES-256 encryption at rest
+- **API Key Protection**: Gemini API key stored securely in Cloud Run environment variables, never exposed to frontend
+- **CORS Configured**: Cloud Run CORS headers prevent unauthorized cross-origin requests
+- **HTTPS Only**: Cloud CDN enforces HTTPS for all traffic
+- **Encryption**: Cloud Storage bucket uses AES-256 encryption at rest
 - **Educational Disclaimers**: Every remedy response includes medical advice disclaimers
 
 ### Scalability Notes
 
-- **Serverless**: Lambda auto-scales based on API requests
-- **DynamoDB**: Pay-per-request billing scales automatically
-- **CloudFront**: Edge locations cache responses for faster delivery
-- **S3**: Can handle unlimited concurrent reads
+- **Serverless**: Cloud Run auto-scales based on API requests (0-10 instances)
+- **Firestore**: Pay-per-request billing scales automatically
+- **Cloud CDN**: Edge locations cache responses for faster delivery
+- **Cloud Storage**: Can handle unlimited concurrent reads
 - **Cost**: Stays under $1/month for typical portfolio usage
 
 ## Results
@@ -304,15 +300,15 @@ For symptom query "headache":
 
 ### Performance Metrics
 
-- **Frontend Load**: ~2 seconds (with CloudFront caching)
+- **Frontend Load**: ~2 seconds (with Cloud CDN caching)
 - **API Response Time**: ~3-5 seconds (Gemini API latency)
-- **DynamoDB Query**: <100ms (cached responses)
-- **CloudFront Hit Ratio**: 95%+ for static assets
+- **Firestore Query**: <100ms (cached responses)
+- **Cloud CDN Hit Ratio**: 95%+ for static assets
 
 ## Next Steps for Enhancement
 
 - [ ] User authentication (sign up / login)
-- [ ] Server-side favorites persistence (DynamoDB)
+- [ ] Server-side favorites persistence (Firestore)
 - [ ] Advanced symptom filtering (multi-select)
 - [ ] Remedy ratings from community
 - [ ] Integration with health APIs
@@ -337,9 +333,9 @@ For symptom query "headache":
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | React 19, TypeScript, Tailwind CSS, Vite |
-| **Backend** | Node.js Lambda (18.x), Express pattern |
+| **Backend** | Node.js 18.x, Express pattern, Docker |
 | **AI** | Google Gemini API 2.5-Flash |
-| **Infrastructure** | Terraform, AWS (S3, CloudFront, Lambda, API Gateway, DynamoDB) |
+| **Infrastructure** | Terraform, GCP (Cloud Run, Cloud Storage, Cloud CDN, Firestore) |
 | **Deployment** | Bash automation script |
 
 ## Portfolio Value
@@ -347,9 +343,9 @@ For symptom query "headache":
 This project demonstrates:
 
 ✅ **Full-Stack Development** - Frontend to serverless backend with professional UI
-✅ **Cloud Architecture** - AWS infrastructure design with CDN and caching
+✅ **Cloud Architecture** - GCP infrastructure design with CDN and caching
 ✅ **Infrastructure as Code** - Terraform for reproducible deployments
-✅ **DevOps** - Automated deployment pipeline with bash scripting
+✅ **DevOps** - Automated deployment pipeline with Docker and bash scripting
 ✅ **API Integration** - Third-party AI API integration with secure key management
 ✅ **Production Best Practices** - Security, CORS, error handling, environment variables
 ✅ **UI/UX Design** - Professional design system with teal color palette, animations, and responsive layout
