@@ -1,12 +1,12 @@
 # Deployment Guide
 
-Complete step-by-step instructions for deploying Natural Remedies AI to AWS.
+Complete step-by-step instructions for deploying Natural Remedies AI to Google Cloud Platform (GCP).
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
 2. [Local Development Setup](#local-development-setup)
-3. [Automated AWS Deployment](#automated-aws-deployment)
-4. [Manual AWS Deployment](#manual-aws-deployment)
+3. [Automated GCP Deployment](#automated-gcp-deployment)
+4. [Manual GCP Deployment](#manual-gcp-deployment)
 5. [Verification](#verification)
 6. [Troubleshooting](#troubleshooting)
 7. [Cleanup](#cleanup)
@@ -22,10 +22,10 @@ node --version
 # Check npm
 npm --version
 
-# Install AWS CLI if missing
-# macOS: brew install awscli
-# Linux: apt-get install awscli
-# Windows: Download from https://aws.amazon.com/cli/
+# Install Google Cloud SDK if missing
+# macOS: brew install google-cloud-sdk
+# Linux: curl https://sdk.cloud.google.com | bash
+# Windows: Download from https://cloud.google.com/sdk/docs/install
 
 # Install Terraform if missing
 # macOS: brew install terraform
@@ -33,32 +33,49 @@ npm --version
 # Windows: Download from https://www.terraform.io/downloads
 
 # Verify installation
-aws --version
+gcloud --version
 terraform --version
+docker --version
 ```
 
-### AWS Account Setup
+### GCP Project Setup
 
-1. **Create AWS Account** at https://aws.amazon.com/
-2. **Create IAM User** with programmatic access:
-   - Go to IAM → Users → Add User
-   - Name: `natural-remedies-ai-deploy`
-   - Permissions: Attach `AdministratorAccess` (or custom policy below)
-   - Download CSV with Access Key and Secret
+1. **Create GCP Project** at https://console.cloud.google.com/
+   - Create new project or select existing
+   - Note your Project ID (e.g., `natural-remedies-ai`)
 
-3. **Configure AWS CLI**:
+2. **Enable Required APIs**:
    ```bash
-   aws configure
-   # Enter: Access Key ID
-   # Enter: Secret Access Key
-   # Default region: us-east-1
-   # Default output format: json
+   gcloud services enable \
+     cloudbuild.googleapis.com \
+     cloudrun.googleapis.com \
+     artifactregistry.googleapis.com \
+     storage.googleapis.com \
+     compute.googleapis.com \
+     --project=your-project-id
    ```
 
-4. **Verify Configuration**:
+3. **Create Service Account**:
    ```bash
-   aws sts get-caller-identity
-   # Should return your account ID and ARN
+   gcloud iam service-accounts create natural-remedies-ai-deploy \
+     --display-name="Natural Remedies AI Deployment" \
+     --project=your-project-id
+
+   gcloud projects add-iam-policy-binding your-project-id \
+     --member=serviceAccount:natural-remedies-ai-deploy@your-project-id.iam.gserviceaccount.com \
+     --role=roles/editor
+   ```
+
+4. **Configure gcloud CLI**:
+   ```bash
+   gcloud auth application-default login
+   gcloud config set project your-project-id
+   ```
+
+5. **Verify Configuration**:
+   ```bash
+   gcloud projects describe your-project-id
+   # Should return your project details
    ```
 
 ### Get Gemini API Key
@@ -112,75 +129,89 @@ npm run build
 # Creates: dist/ folder with optimized assets
 ```
 
-## Automated AWS Deployment
+## Automated GCP Deployment
 
-**Recommended for quick deployment (5 minutes)**
+**Recommended for quick deployment (8-10 minutes)**
 
 ### Step 1: Verify Prerequisites
 
 ```bash
 # Check all tools are installed
-aws sts get-caller-identity
+gcloud projects describe your-project-id
 terraform --version
 npm --version
+docker --version
 
 # Ensure you're in the project root
 pwd
 # Should end with: /Users/tg3/dev/natural-remedies-ai
 ```
 
-### Step 2: Update Terraform Configuration
+### Step 2: Update Configuration Files
 
 Edit `terraform/terraform.tfvars`:
 
 ```hcl
-environment       = "dev"      # Change to "prod" for production
-region            = "us-east-1"
-project_name      = "natural-remedies-ai"
-gemini_api_key    = "AIzaSy..."  # Your API key
+project_id        = "natural-remedies-ai"
+region             = "us-east1"
+environment        = "dev"      # Change to "prod" for production
 ```
 
-### Step 3: Run Deployment Script
+Update your `.env.local` with your Gemini API key:
+
+```bash
+echo "VITE_GEMINI_API_KEY=AIzaSy..." > .env.local
+```
+
+### Step 3: Set GitHub Secrets (for CI/CD)
+
+Add to your GitHub repository Settings → Secrets:
+- `GEMINI_API_KEY`: Your Gemini API key
+- `WIF_PROVIDER`: Workload Identity Provider
+- `WIF_SERVICE_ACCOUNT`: Service account email
+
+### Step 4: Run Deployment Script
 
 ```bash
 chmod +x deploy.sh
-./deploy.sh
+./deploy.sh dev your-project-id your-gemini-api-key
 ```
 
 **Output will show:**
 
 ```
-=== Natural Remedies AI Deployment ===
-
-Checking prerequisites...
-✓ All prerequisites installed
+=== Natural Remedies AI GCP Deployment ===
 
 1. Building React application...
 ✓ React app built successfully
 
-2. Packaging Lambda function...
-✓ Lambda function packaged: lambda.zip
+2. Configuring Docker authentication...
+✓ Docker authenticated to Artifact Registry
 
-3. Initializing Terraform...
+3. Building and pushing Docker image...
+✓ Docker image built and pushed:
+  us-east1-docker.pkg.dev/natural-remedies-ai/docker-repo/natural-remedies-ai-api:latest
+
+4. Initializing Terraform...
 ✓ Terraform initialized
 
-4. Planning Terraform deployment...
+5. Planning infrastructure...
 ✓ Terraform plan created
 
-5. Applying Terraform configuration...
+6. Applying Terraform configuration...
 ✓ Infrastructure deployed
-  S3 Bucket: natural-remedies-ai-frontend-dev-049475639513
-  CloudFront Distribution: E1234ABCD567E8F
+  Cloud Run Service: natural-remedies-ai-api-dev
+  Cloud Storage Bucket: natural-remedies-ai-frontend-dev-807828955289
 
-6. Uploading frontend to S3...
-✓ Frontend uploaded to S3
+7. Uploading frontend to Cloud Storage...
+✓ Frontend uploaded to Cloud Storage
 
-7. Invalidating CloudFront cache...
-✓ CloudFront invalidation created: ABCDEFG1234567
+8. Configuring Cloud CDN...
+✓ Cloud CDN enabled on Cloud Storage bucket
 
 === Deployment Complete ===
-Application URL: https://d1234567890abc.cloudfront.net
-API Endpoint: https://abc123def456.execute-api.us-east-1.amazonaws.com/dev/remedies
+Frontend URL: https://natural-remedies-ai-frontend-dev-807828955289.web.app
+API Endpoint: https://natural-remedies-ai-api-dev-xxxxx.run.app
 
 Deployment finished successfully!
 ```
@@ -188,10 +219,10 @@ Deployment finished successfully!
 ### Step 4: Save Your URLs
 
 Copy these URLs to a safe place:
-- **Application**: `https://d1234567890abc.cloudfront.net`
-- **API**: `https://abc123def456.execute-api.us-east-1.amazonaws.com/dev/remedies`
+- **Frontend**: `https://natural-remedies-ai-frontend-dev-807828955289.web.app`
+- **API**: `https://natural-remedies-ai-api-dev-xxxxx.run.app`
 
-## Manual AWS Deployment
+## Manual GCP Deployment
 
 **For detailed control over each step**
 
@@ -201,13 +232,19 @@ Copy these URLs to a safe place:
 npm run build
 ```
 
-### Step 2: Package Lambda
+### Step 2: Build and Push Docker Image
 
 ```bash
-cd lambda
-npm install
-cd ..
-zip -r lambda.zip lambda/ -x "lambda/node_modules/*/test/*" "lambda/node_modules/*/.git/*"
+# Configure Docker authentication
+gcloud auth configure-docker us-east1-docker.pkg.dev
+
+# Build Docker image
+REGISTRY="us-east1-docker.pkg.dev"
+PROJECT_ID="natural-remedies-ai"
+IMAGE_NAME="${REGISTRY}/${PROJECT_ID}/docker-repo/natural-remedies-ai-api:latest"
+
+docker build -t ${IMAGE_NAME} .
+docker push ${IMAGE_NAME}
 ```
 
 ### Step 3: Initialize Terraform State
@@ -215,7 +252,7 @@ zip -r lambda.zip lambda/ -x "lambda/node_modules/*/test/*" "lambda/node_modules
 ```bash
 cd terraform
 
-# Initialize with local state first
+# Initialize Terraform
 terraform init
 
 # Verify
@@ -227,7 +264,7 @@ terraform version
 ```bash
 terraform plan -out=tfplan
 # Review the changes
-# Should show: ~15 resources to be created
+# Should show: ~10-12 resources to be created (Cloud Run, Cloud Storage, IAM, etc.)
 ```
 
 ### Step 5: Deploy Infrastructure
@@ -236,24 +273,25 @@ terraform plan -out=tfplan
 terraform apply tfplan
 
 # Saves outputs for next steps
-export S3_BUCKET=$(terraform output -raw s3_bucket_name)
-export CLOUDFRONT_ID=$(terraform output -raw cloudfront_distribution_id)
-export API_ENDPOINT=$(terraform output -raw api_gateway_url)
+export CLOUD_RUN_URL=$(terraform output -raw cloud_run_url)
+export BUCKET_NAME=$(terraform output -raw storage_bucket_name)
+export API_ENDPOINT=$(terraform output -raw api_endpoint)
 ```
 
-### Step 6: Upload Frontend to S3
+### Step 6: Upload Frontend to Cloud Storage
 
 ```bash
 cd ..
-aws s3 sync dist "s3://${S3_BUCKET}" --delete
+gsutil -m rsync -r -d dist/ gs://${BUCKET_NAME}/
 ```
 
-### Step 7: Invalidate CloudFront Cache
+### Step 7: Enable Cloud CDN (optional)
 
 ```bash
-aws cloudfront create-invalidation \
-  --distribution-id "${CLOUDFRONT_ID}" \
-  --paths "/*"
+# Enable Cloud CDN on the bucket
+gsutil cors set - gs://${BUCKET_NAME}/ <<EOF
+[{"origin": ["*"], "method": ["GET", "HEAD"], "responseHeader": ["Content-Type"]}]
+EOF
 ```
 
 ### Step 8: Get Deployment URLs
@@ -263,9 +301,9 @@ cd terraform
 terraform output
 
 # Shows:
-# api_gateway_url = "https://..."
-# cloudfront_domain_name = "d....cloudfront.net"
-# s3_bucket_name = "natural-remedies-ai-..."
+# cloud_run_url = "https://natural-remedies-ai-api-dev-xxxxx.run.app"
+# storage_bucket_name = "natural-remedies-ai-frontend-dev-..."
+# frontend_url = "https://...storage.googleapis.com"
 ```
 
 ## Verification
@@ -273,16 +311,16 @@ terraform output
 ### Test 1: Frontend Access
 
 ```bash
-# Replace with your CloudFront URL
-curl -I https://d1234567890abc.cloudfront.net
+# Replace with your Cloud Storage URL
+curl -I https://natural-remedies-ai-frontend-dev-807828955289.web.app
 
 # Expected: HTTP/2 200
 ```
 
-### Test 2: API Endpoint
+### Test 2: Cloud Run API Endpoint
 
 ```bash
-curl -X POST https://abc123def456.execute-api.us-east-1.amazonaws.com/dev/remedies \
+curl -X POST https://natural-remedies-ai-api-dev-xxxxx.run.app/remedies \
   -H "Content-Type: application/json" \
   -d '{"symptoms":"headache"}'
 
@@ -291,7 +329,7 @@ curl -X POST https://abc123def456.execute-api.us-east-1.amazonaws.com/dev/remedi
 
 ### Test 3: In Browser
 
-1. Open your CloudFront URL
+1. Open your Cloud Storage URL
 2. Enter "headache" in symptom input
 3. Wait 3-5 seconds for AI response
 4. Verify remedies appear
@@ -299,22 +337,22 @@ curl -X POST https://abc123def456.execute-api.us-east-1.amazonaws.com/dev/remedi
 6. Verify history panel shows query
 7. Toggle dark mode
 
-### Test 4: Check AWS Resources
+### Test 4: Check GCP Resources
 
 ```bash
-# Verify S3 bucket
-aws s3 ls | grep natural-remedies-ai
+# Verify Cloud Storage bucket
+gsutil ls -b gs://natural-remedies-ai-frontend-dev-*
 
-# Verify CloudFront distribution
-aws cloudfront list-distributions \
-  --query 'DistributionList.Items[?Origins.Items[0].DomainName]'
+# Verify Cloud Run service
+gcloud run services describe natural-remedies-ai-api-dev --region us-east1 --project natural-remedies-ai
 
-# Verify Lambda function
-aws lambda list-functions \
-  --query 'Functions[?FunctionName==`natural-remedies-ai-api-dev`]'
+# Check Cloud Run logs
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=natural-remedies-ai-api-dev" \
+  --limit 50 \
+  --project natural-remedies-ai
 
-# Check DynamoDB table
-aws dynamodb list-tables
+# Verify Artifact Registry image
+gcloud artifacts docker images list us-east1-docker.pkg.dev/natural-remedies-ai/docker-repo
 ```
 
 ## Troubleshooting
@@ -339,76 +377,109 @@ brew install terraform  # macOS
 # Or download from: https://www.terraform.io/downloads
 ```
 
-### Issue: "aws: command not found"
+### Issue: "gcloud: command not found"
 
 **Solution:**
 ```bash
-# Install AWS CLI
-brew install awscli  # macOS
-# Or download from: https://aws.amazon.com/cli/
+# Install Google Cloud SDK
+brew install google-cloud-sdk  # macOS
+# Or download from: https://cloud.google.com/sdk/docs/install
 
 # Verify installation
-aws --version
+gcloud --version
 
 # Configure credentials
-aws configure
+gcloud auth application-default login
+gcloud config set project natural-remedies-ai
 ```
 
-### Issue: "AWS credentials not configured"
+### Issue: "GCP credentials not configured"
 
 **Solution:**
 ```bash
-# Configure AWS
-aws configure
+# Authenticate with Google Cloud
+gcloud auth application-default login
 
-# Or set environment variables
-export AWS_ACCESS_KEY_ID=your_key
-export AWS_SECRET_ACCESS_KEY=your_secret
-export AWS_DEFAULT_REGION=us-east-1
+# Set project
+gcloud config set project natural-remedies-ai
 
 # Verify
-aws sts get-caller-identity
+gcloud projects describe natural-remedies-ai
 ```
 
-### Issue: API returns 502 Bad Gateway
+### Issue: "Cloud Resource Manager API not enabled"
 
 **Possible causes:**
-- Lambda function not deployed correctly
+- Required GCP APIs not enabled
+- Insufficient permissions
+
+**Solution:**
+```bash
+# Enable required APIs
+gcloud services enable \
+  cloudbuild.googleapis.com \
+  cloudrun.googleapis.com \
+  artifactregistry.googleapis.com \
+  storage.googleapis.com \
+  compute.googleapis.com \
+  --project=natural-remedies-ai
+
+# Verify
+gcloud services list --enabled --project=natural-remedies-ai
+```
+
+### Issue: "Cloud Run service returns 403/500 error"
+
+**Possible causes:**
+- Docker image not pushed to Artifact Registry
 - Environment variable not set
 - Gemini API key invalid
 
 **Solution:**
 ```bash
-# Check Lambda logs
-aws logs tail /aws/lambda/natural-remedies-ai-api-dev --follow
+# Check Cloud Run service details
+gcloud run services describe natural-remedies-ai-api-dev --region us-east1 --project natural-remedies-ai
 
-# Check Lambda environment
-aws lambda get-function-configuration \
-  --function-name natural-remedies-ai-api-dev \
-  --query 'Environment.Variables'
+# Check Cloud Run logs
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=natural-remedies-ai-api-dev" \
+  --limit 50 \
+  --project natural-remedies-ai
 
-# Redeploy Lambda
+# Check Artifact Registry image
+gcloud artifacts docker images list us-east1-docker.pkg.dev/natural-remedies-ai/docker-repo
+
+# Redeploy service
 ./deploy.sh
 ```
 
-### Issue: "Gemini API key invalid" in Lambda logs
+### Issue: "Gemini API key invalid" in Cloud Run logs
 
 **Solution:**
 1. Get new API key from https://ai.google.dev/
-2. Update `terraform/terraform.tfvars` with new key
-3. Run `./deploy.sh` again
+2. Update GitHub Secrets with new key: `GEMINI_API_KEY`
+3. Update `.env.local` with new key
+4. Push to main branch to trigger redeployment
 
-### Issue: CloudFront still showing old version
+### Issue: "The specified bucket does not exist" (NoSuchBucket)
+
+**Possible causes:**
+- Cloud Storage bucket not created
+- GCP project billing disabled
+- Insufficient permissions
 
 **Solution:**
 ```bash
-# Clear CloudFront cache manually
-aws cloudfront create-invalidation \
-  --distribution-id E1234ABCD567E8F \
-  --paths "/*"
+# Create Cloud Storage bucket if missing
+gsutil mb -l us-east1 gs://natural-remedies-ai-frontend-dev-807828955289
 
-# Or redeploy
-./deploy.sh
+# Enable billing for the project
+# Go to: https://console.cloud.google.com/billing/projects
+
+# Check bucket contents
+gsutil ls -R gs://natural-remedies-ai-frontend-dev-807828955289/
+
+# Reupload frontend files
+gsutil -m rsync -r -d dist/ gs://natural-remedies-ai-frontend-dev-807828955289/
 ```
 
 ### Issue: Terraform state errors
@@ -420,7 +491,7 @@ cd terraform
 rm -rf .terraform terraform.tfstate*
 terraform init
 cd ..
-./deploy.sh
+./deploy.sh dev natural-remedies-ai your-gemini-api-key
 ```
 
 ## Environment Switching
@@ -435,13 +506,13 @@ When ready to go production:
 # To:     environment = "prod"
 
 # Run deployment
-./deploy.sh
+./deploy.sh prod natural-remedies-ai your-gemini-api-key
 ```
 
 This creates separate resources:
 - Bucket: `natural-remedies-ai-frontend-prod-...`
-- Lambda: `natural-remedies-ai-api-prod`
-- API: `.../prod/remedies`
+- Cloud Run Service: `natural-remedies-ai-api-prod`
+- API: `https://natural-remedies-ai-api-prod-xxxxx.run.app`
 
 Keep "dev" running for testing new features.
 
@@ -452,11 +523,10 @@ Keep "dev" running for testing new features.
 ```bash
 cd terraform
 
-# For dev
-export TF_VARS="-var-file=terraform.tfvars"
+# For dev environment
 terraform destroy -auto-approve
 
-# Or for prod (if different tfvars file)
+# Or clean up manually
 rm terraform.tfstate*
 terraform init
 terraform destroy -auto-approve
@@ -465,22 +535,19 @@ terraform destroy -auto-approve
 ### Full Cleanup
 
 ```bash
-# Delete S3 buckets
-aws s3 ls | grep natural-remedies-ai | awk '{print $3}' | \
-  xargs -I {} aws s3 rm s3://{} --recursive
+# Delete Cloud Storage buckets
+gsutil -m rm -r gs://natural-remedies-ai-frontend-dev-*
+gsutil -m rm -r gs://natural-remedies-ai-frontend-prod-*
 
-# Delete Lambda functions
-aws lambda delete-function --function-name natural-remedies-ai-api-dev
-aws lambda delete-function --function-name natural-remedies-ai-api-prod
+# Delete Cloud Run services
+gcloud run services delete natural-remedies-ai-api-dev --region us-east1 --project natural-remedies-ai
+gcloud run services delete natural-remedies-ai-api-prod --region us-east1 --project natural-remedies-ai
 
-# Delete DynamoDB tables
-aws dynamodb delete-table --table-name natural-remedies-ai-cache-dev
-aws dynamodb delete-table --table-name natural-remedies-ai-cache-prod
+# Delete Artifact Registry images
+gcloud artifacts docker images delete us-east1-docker.pkg.dev/natural-remedies-ai/docker-repo/natural-remedies-ai-api --project natural-remedies-ai
 
-# Delete IAM roles
-aws iam delete-role-policy --role-name natural-remedies-ai-lambda-role-dev \
-  --policy-name lambda-policy
-aws iam delete-role --role-name natural-remedies-ai-lambda-role-dev
+# Delete service accounts
+gcloud iam service-accounts delete natural-remedies-ai-deploy@natural-remedies-ai.iam.gserviceaccount.com --project natural-remedies-ai
 ```
 
 Or use Terraform:
@@ -496,16 +563,17 @@ rm -rf .terraform terraform.tfstate*
 For issues:
 
 1. Check **Troubleshooting** section above
-2. Review CloudWatch Logs: `aws logs tail /aws/lambda/natural-remedies-ai-api-dev --follow`
+2. Review Cloud Run Logs: `gcloud logging read "resource.type=cloud_run_revision" --limit 50 --project natural-remedies-ai`
 3. Check Terraform output: `terraform output -json | jq .`
-4. Review AWS Console for service health
+4. Review GCP Console for service health and billing
 
 ---
 
 **Cost Estimate (USD/month)**
-- Lambda: $0.20 (free tier covers 1M requests)
-- S3: $0.023 (first 50GB)
-- CloudFront: $0.085 (free tier covers 50GB)
-- DynamoDB: ~$0 (pay-per-request, very cheap)
+- Cloud Run: $0.00-2.40 (free tier: 180,000 vCPU-seconds/month)
+- Cloud Storage: $0.02-0.05 (first 5GB free, then $0.020/GB)
+- Cloud CDN: $0.085/GB (after 50GB free tier)
+- Artifact Registry: $0.40/GB storage
+- Gemini API: $0.075 per 1K input tokens, $0.30 per 1K output tokens
 
-**Total: ~$1-2/month for typical usage**
+**Total: ~$2-10/month for typical usage** (within free tier if usage stays low)
