@@ -25,8 +25,12 @@ export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick, is
         : "bg-white dark:bg-dark-green-bg shadow-sm sticky top-0 z-50 py-4 px-4 sm:px-6 lg:px-8";
 
     const textClasses = isLanding
-        ? "text-text-light/80 hover:text-text-light"
+        ? "text-dark-green/80 hover:text-dark-green dark:text-text-light/80 dark:hover:text-text-light"
         : "text-teal-800 dark:text-teal-100 hover:text-teal-600 dark:hover:text-teal-300";
+
+    const logoTextClasses = isLanding
+        ? "text-dark-green dark:text-text-light"
+        : "text-teal-900 dark:text-white";
 
     return (
         <header className={headerClasses}>
@@ -41,10 +45,10 @@ export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick, is
                             <path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"></path>
                         </svg>
                     </div>
-                    <h1 className={`text-2xl font-bold ${isLanding ? 'text-text-light' : 'text-teal-900 dark:text-white'}`}>RemedyAI</h1>
+                    <h1 className={`text-2xl font-bold ${logoTextClasses}`}>RemedyAI</h1>
                 </button>
 
-                <nav className={`hidden md:flex items-center gap-6 ${textClasses}`}>
+                <nav className={`hidden md:flex items-center gap-6`}>
                     <a href="#" className={`${textClasses} font-medium transition`}>How it Works</a>
                     <a href="#" className={`${textClasses} font-medium transition`}>Our Science</a>
                     <a href="#" className={`${textClasses} font-medium transition`}>Partners</a>
@@ -53,22 +57,22 @@ export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick, is
                 <div className="hidden md:flex items-center gap-2">
                     <button
                         onClick={toggleTheme}
-                        className="p-2 rounded-full text-teal-800 dark:text-teal-100 hover:bg-teal-100 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-energetic-green"
+                        className="p-2 rounded-full text-dark-green dark:text-teal-100 hover:bg-energetic-green/20 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-energetic-green"
                         aria-label="Toggle theme"
                     >
                         {theme === 'light' ? <MoonIcon className="h-6 w-6" /> : <SunIcon className="h-6 w-6" />}
                     </button>
-                    <button className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${isLanding ? 'text-text-light hover:bg-energetic-green/20' : 'text-teal-800 dark:text-teal-100 hover:bg-teal-100 dark:hover:bg-teal-800'}`}>
+                    <button className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${isLanding ? 'text-dark-green dark:text-text-light hover:bg-energetic-green/20' : 'text-teal-800 dark:text-teal-100 hover:bg-teal-100 dark:hover:bg-teal-800'}`}>
                         Log In
                     </button>
-                    <button className="px-4 py-2 text-sm font-bold text-dark-green-bg bg-energetic-green rounded-lg hover:bg-opacity-90 transition-colors">
+                    <button className="px-4 py-2 text-sm font-bold text-white bg-dark-green dark:bg-energetic-green dark:text-dark-green-bg rounded-lg hover:bg-opacity-90 transition-colors">
                         Sign Up
                     </button>
                 </div>
 
                 <button
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className={`md:hidden ${isLanding ? 'text-text-light' : 'text-teal-800 dark:text-teal-100'}`}
+                    className={`md:hidden ${isLanding ? 'text-dark-green dark:text-text-light' : 'text-teal-800 dark:text-teal-100'}`}
                     aria-label="Toggle mobile menu"
                     aria-expanded={mobileMenuOpen}
                 >
