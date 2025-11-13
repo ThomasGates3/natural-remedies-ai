@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { SunIcon, MoonIcon } from './icons/ThemeIcons';
-import { BookIcon } from './icons/LeafIcon';
-import { MenuIcon, CloseIcon } from './icons/ActionIcons';
 
 interface HeaderProps {
     theme: 'light' | 'dark';
     setTheme: React.Dispatch<React.SetStateAction<'light' | 'dark'>>;
     onLogoClick?: () => void;
+    isLanding?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick }) => {
+export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick, isLanding = false }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const toggleTheme = () => {
@@ -21,64 +20,80 @@ export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick }) 
         onLogoClick?.();
     };
 
+    const headerClasses = isLanding
+        ? "absolute top-0 left-0 right-0 z-10 py-6 px-4 sm:px-6 lg:px-8"
+        : "bg-white dark:bg-dark-green-bg shadow-sm sticky top-0 z-50 py-4 px-4 sm:px-6 lg:px-8";
+
+    const textClasses = isLanding
+        ? "text-text-light/80 hover:text-text-light"
+        : "text-teal-800 dark:text-teal-100 hover:text-teal-600 dark:hover:text-teal-300";
+
     return (
-        <header className="bg-white dark:bg-teal-900 shadow-sm sticky top-0 z-50">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center py-4">
-                    <button
-                        onClick={handleLogoClick}
-                        className="flex items-center space-x-3 hover:opacity-80 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 rounded-lg p-1"
-                        aria-label="Go to home"
-                    >
-                        <BookIcon className="h-8 w-8 text-teal-600 dark:text-teal-300" />
-                        <span className="text-xl font-bold text-teal-900 dark:text-white">RemedyAI</span>
-                    </button>
-
-                    <nav className="hidden md:flex items-center space-x-8 text-teal-800 dark:text-teal-100">
-                        <a href="#" className="hover:text-teal-600 dark:hover:text-teal-300 transition focus:outline-none focus:ring-2 focus:ring-teal-500 rounded px-2 py-1">How it Works</a>
-                        <a href="#" className="hover:text-teal-600 dark:hover:text-teal-300 transition focus:outline-none focus:ring-2 focus:ring-teal-500 rounded px-2 py-1">Our Science</a>
-                        <a href="#" className="hover:text-teal-600 dark:hover:text-teal-300 transition focus:outline-none focus:ring-2 focus:ring-teal-500 rounded px-2 py-1">Partners</a>
-                    </nav>
-
-                    <div className="flex items-center space-x-2 sm:space-x-4">
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 rounded-full text-teal-800 dark:text-teal-100 hover:bg-teal-100 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-teal-500"
-                            aria-label="Toggle theme"
-                        >
-                            {theme === 'light' ? <MoonIcon className="h-6 w-6" /> : <SunIcon className="h-6 w-6" />}
-                        </button>
-                        <a href="#" className="text-teal-800 dark:text-teal-100 hover:text-teal-600 dark:hover:text-teal-300 transition hidden sm:inline focus:outline-none focus:ring-2 focus:ring-teal-500 rounded px-3 py-2">
-                            Log In
-                        </a>
-                        <button className="px-4 sm:px-6 py-2 bg-teal-700 hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700 text-white rounded-full font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
-                            Sign Up
-                        </button>
-
-                        {/* Mobile menu button */}
-                        <button
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="md:hidden p-2 rounded-full text-teal-800 dark:text-teal-100 hover:bg-teal-100 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-teal-500"
-                            aria-label="Toggle mobile menu"
-                            aria-expanded={mobileMenuOpen}
-                        >
-                            {mobileMenuOpen ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
-                        </button>
+        <header className={headerClasses}>
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+                <button
+                    onClick={handleLogoClick}
+                    className="flex items-center gap-3 hover:opacity-80 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-energetic-green rounded-lg p-1"
+                    aria-label="Go to home"
+                >
+                    <div className="size-8 text-energetic-green">
+                        <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"></path>
+                        </svg>
                     </div>
+                    <h1 className={`text-2xl font-bold ${isLanding ? 'text-text-light' : 'text-teal-900 dark:text-white'}`}>RemedyAI</h1>
+                </button>
+
+                <nav className={`hidden md:flex items-center gap-6 ${textClasses}`}>
+                    <a href="#" className={`${textClasses} font-medium transition`}>How it Works</a>
+                    <a href="#" className={`${textClasses} font-medium transition`}>Our Science</a>
+                    <a href="#" className={`${textClasses} font-medium transition`}>Partners</a>
+                </nav>
+
+                <div className="hidden md:flex items-center gap-2">
+                    <button
+                        onClick={toggleTheme}
+                        className="p-2 rounded-full text-teal-800 dark:text-teal-100 hover:bg-teal-100 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-energetic-green"
+                        aria-label="Toggle theme"
+                    >
+                        {theme === 'light' ? <MoonIcon className="h-6 w-6" /> : <SunIcon className="h-6 w-6" />}
+                    </button>
+                    <button className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${isLanding ? 'text-text-light hover:bg-energetic-green/20' : 'text-teal-800 dark:text-teal-100 hover:bg-teal-100 dark:hover:bg-teal-800'}`}>
+                        Log In
+                    </button>
+                    <button className="px-4 py-2 text-sm font-bold text-dark-green-bg bg-energetic-green rounded-lg hover:bg-opacity-90 transition-colors">
+                        Sign Up
+                    </button>
                 </div>
 
-                {/* Mobile menu */}
-                {mobileMenuOpen && (
-                    <nav className="md:hidden pb-4 border-t border-teal-200 dark:border-teal-800 mt-4">
-                        <div className="flex flex-col space-y-3">
-                            <a href="#" className="text-teal-800 dark:text-teal-100 hover:text-teal-600 dark:hover:text-teal-300 py-2 px-3 rounded hover:bg-teal-50 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-teal-500">How it Works</a>
-                            <a href="#" className="text-teal-800 dark:text-teal-100 hover:text-teal-600 dark:hover:text-teal-300 py-2 px-3 rounded hover:bg-teal-50 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-teal-500">Our Science</a>
-                            <a href="#" className="text-teal-800 dark:text-teal-100 hover:text-teal-600 dark:hover:text-teal-300 py-2 px-3 rounded hover:bg-teal-50 dark:hover:bg-teal-800 transition focus:outline-none focus:ring-2 focus:ring-teal-500">Partners</a>
-                            <a href="#" className="text-teal-800 dark:text-teal-100 hover:text-teal-600 dark:hover:text-teal-300 py-2 px-3 rounded hover:bg-teal-50 dark:hover:bg-teal-800 transition md:hidden focus:outline-none focus:ring-2 focus:ring-teal-500">Log In</a>
-                        </div>
-                    </nav>
-                )}
+                <button
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className={`md:hidden ${isLanding ? 'text-text-light' : 'text-teal-800 dark:text-teal-100'}`}
+                    aria-label="Toggle mobile menu"
+                    aria-expanded={mobileMenuOpen}
+                >
+                    <span className="material-symbols-outlined text-3xl">menu</span>
+                </button>
             </div>
+
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+                <nav className="md:hidden mt-4 pb-4 border-t border-energetic-green/20">
+                    <div className="flex flex-col space-y-3 pt-4">
+                        <a href="#" className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>How it Works</a>
+                        <a href="#" className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>Our Science</a>
+                        <a href="#" className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>Partners</a>
+                        <button
+                            onClick={toggleTheme}
+                            className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green text-left flex items-center gap-2`}
+                            aria-label="Toggle theme"
+                        >
+                            {theme === 'light' ? <MoonIcon className="h-5 w-5" /> : <SunIcon className="h-5 w-5" />}
+                            <span>Toggle Theme</span>
+                        </button>
+                    </div>
+                </nav>
+            )}
         </header>
     );
 };

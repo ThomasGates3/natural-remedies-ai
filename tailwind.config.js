@@ -9,7 +9,8 @@ export default {
   ],
   theme: {
     fontFamily: {
-      sans: ['Lexend', 'system-ui', 'sans-serif']
+      sans: ['Inter', 'system-ui', 'sans-serif'],
+      display: ['Inter', 'sans-serif']
     },
     colors: {
       transparent: 'transparent',
@@ -41,6 +42,13 @@ export default {
         900: '#134e4a',
         950: '#0d3f3a',
       },
+      'energetic-green': '#34D399',
+      'bright-accent': '#A7F3D0',
+      'dark-green-bg': '#064E3B',
+      'dark-green-content': '#043A2E',
+      'text-light': '#F0FDF4',
+      'text-dark': '#A7F3D0',
+      'text-muted': '#6EE7B7',
       primary: {
         light: '#22c55e',
         DEFAULT: '#16a34a',
