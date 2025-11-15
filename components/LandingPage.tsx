@@ -16,7 +16,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-dark-green-content text-dark-green dark:text-text-light font-display">
+    <div className="min-h-screen bg-white dark:bg-dark-green-content text-gray-900 dark:text-text-light font-display">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-bright-accent/50 to-white dark:from-energetic-green/10 dark:to-dark-green-bg -z-10"></div>
@@ -24,14 +24,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
           <h2 className="text-4xl md:text-6xl font-extrabold text-dark-green dark:text-text-light tracking-tighter leading-tight">
             Find Natural Remedies, Instantly.
           </h2>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-dark-green/70 dark:text-text-muted">
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-700 dark:text-text-muted">
             Describe your symptoms and let our AI discover personalized, natural solutions for your well-being.
           </p>
 
           {/* Search Input */}
           <form onSubmit={handleSubmit} className="mt-8 max-w-2xl mx-auto">
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-dark-green/50 dark:text-text-muted/50">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-text-muted/50">
                 healing
               </span>
               <input
@@ -39,13 +39,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
                 value={symptoms}
                 onChange={(e) => setSymptoms(e.target.value)}
                 placeholder="e.g., 'sore throat and cough'"
-                className="w-full pl-12 pr-32 py-4 text-lg bg-white dark:bg-dark-green-content border-2 border-bright-accent dark:border-dark-green-bg rounded-full shadow-lg focus:ring-2 focus:ring-energetic-green focus:border-energetic-green transition-shadow duration-300 placeholder:text-dark-green/40 dark:placeholder:text-text-light/40 text-dark-green dark:text-text-light"
+                className="w-full pl-12 pr-32 py-4 text-lg bg-white dark:bg-dark-green-content border-2 border-bright-accent dark:border-dark-green-bg rounded-full shadow-lg focus:ring-2 focus:ring-energetic-green focus:border-energetic-green transition-shadow duration-300 placeholder:text-gray-400 dark:placeholder:text-text-light/40 text-gray-900 dark:text-text-light"
                 disabled={isLoading}
                 aria-label="Enter symptoms"
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-dark-green dark:bg-energetic-green text-white dark:text-dark-green-bg font-bold px-6 py-3 rounded-full hover:bg-opacity-90 transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-dark-green text-white dark:text-dark-green-bg font-bold px-6 py-3 rounded-full hover:bg-opacity-90 transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading || !symptoms.trim()}
                 aria-label="Find remedies"
               >
@@ -57,7 +57,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
       </section>
 
       {/* Process Section */}
-      <section className="py-20 lg:py-24 bg-white dark:bg-dark-green-content">
+      <section id="how-it-works" className="py-20 lg:py-24 bg-white dark:bg-dark-green-content">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="text-energetic-green font-semibold">THE PROCESS</span>
@@ -72,7 +72,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
                 <span className="material-symbols-outlined text-4xl">edit_note</span>
               </div>
               <h4 className="text-xl font-bold text-dark-green dark:text-text-light">1. Describe Your Symptoms</h4>
-              <p className="mt-2 text-dark-green/70 dark:text-text-muted">
+              <p className="mt-2 text-gray-700 dark:text-text-muted">
                 Enter what you're feeling in simple terms. The more detail, the better our AI can assist you.
               </p>
             </div>
@@ -84,7 +84,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
                 </span>
               </div>
               <h4 className="text-xl font-bold text-dark-green dark:text-text-light">2. AI Analyzes</h4>
-              <p className="mt-2 text-dark-green/70 dark:text-text-muted">
+              <p className="mt-2 text-gray-700 dark:text-text-muted">
                 Our system cross-references your symptoms with a vast database of traditional and scientific knowledge.
               </p>
             </div>
@@ -94,7 +94,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
                 <span className="material-symbols-outlined text-4xl">local_florist</span>
               </div>
               <h4 className="text-xl font-bold text-dark-green dark:text-text-light">3. Get Recommendations</h4>
-              <p className="mt-2 text-dark-green/70 dark:text-text-muted">
+              <p className="mt-2 text-gray-700 dark:text-text-muted">
                 Receive a curated list of natural remedies, complete with instructions and effectiveness ratings.
               </p>
             </div>
@@ -103,7 +103,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
       </section>
 
       {/* Trust Section */}
-      <section className="py-20 lg:py-24 bg-background-light dark:bg-dark-green-bg">
+      <section id="our-science" className="py-20 lg:py-24 bg-white dark:bg-dark-green-bg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div>
@@ -111,7 +111,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
               <h3 className="mt-2 text-3xl md:text-4xl font-bold text-dark-green dark:text-text-light tracking-tight">
                 Powered by Science, Guided by Nature
               </h3>
-              <p className="mt-4 text-lg text-dark-green/70 dark:text-text-muted">
+              <p className="mt-4 text-lg text-gray-700 dark:text-text-muted">
                 We blend cutting-edge AI with centuries of natural wisdom to provide you with safe and effective recommendations.
               </p>
             </div>
@@ -123,7 +123,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
                 </div>
                 <div>
                   <h4 className="font-bold text-dark-green dark:text-text-light">High Accuracy AI</h4>
-                  <p className="text-dark-green/70 dark:text-text-muted">
+                  <p className="text-gray-700 dark:text-text-muted">
                     Our model is trained on peer-reviewed studies and verified sources for trustworthy results.
                   </p>
                 </div>
@@ -135,7 +135,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
                 </div>
                 <div>
                   <h4 className="font-bold text-dark-green dark:text-text-light">Vast Remedy Database</h4>
-                  <p className="text-dark-green/70 dark:text-text-muted">
+                  <p className="text-gray-700 dark:text-text-muted">
                     Access thousands of remedies, from herbal solutions to lifestyle adjustments, all in one place.
                   </p>
                 </div>
@@ -147,7 +147,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
                 </div>
                 <div>
                   <h4 className="font-bold text-dark-green dark:text-text-light">Partner Endorsements</h4>
-                  <p className="text-dark-green/70 dark:text-text-muted">
+                  <p className="text-gray-700 dark:text-text-muted">
                     Trusted by leading wellness experts and naturopathic practitioners.
                   </p>
                 </div>
@@ -167,6 +167,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
             </p>
             <p className="mt-4 text-bright-accent/80 dark:text-text-dark/80">- Dr. Evelyn Reed, Naturopathic Doctor</p>
           </div>
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section id="partners" className="py-20 lg:py-24 bg-white dark:bg-dark-green-content">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="text-energetic-green font-semibold">OUR PARTNERS</span>
+          <h3 className="mt-2 text-3xl md:text-4xl font-bold text-dark-green dark:text-text-light tracking-tight mb-12">
+            Trusted by Leading Wellness Organizations
+          </h3>
+          <p className="text-lg text-gray-700 dark:text-text-muted max-w-3xl mx-auto">
+            RemedyAI partners with leading wellness experts, naturopathic practitioners, and health organizations to ensure our recommendations are backed by science and decades of natural health wisdom.
+          </p>
         </div>
       </section>
     </div>

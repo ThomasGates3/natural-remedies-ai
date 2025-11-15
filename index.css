@@ -1,3 +1,56 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Light Mode Colors */
+  --color-energetic-green: #34D399;
+  --color-bright-accent: #A7F3D0;
+  --color-dark-green: #064E3B;
+  --color-background-light: #F0FDF4;
+
+  /* Dark Mode Colors */
+  --color-dark-green-bg: #064E3B;
+  --color-dark-green-content: #043A2E;
+  --color-background-dark: #022C22;
+  --color-text-light: #F0FDF4;
+  --color-text-dark: #A7F3D0;
+  --color-text-muted: #6EE7B7;
+  --color-secondary: #f97316;
+
+  /* Light Mode Text Colors */
+  --color-light-text: #1F2937;
+  --color-light-text-muted: #6B7280;
+
+  /* Primary Color Scale */
+  --color-primary-light: #22c55e;
+  --color-primary: #16a34a;
+  --color-primary-dark: #15803d;
+
+  /* Teal Color Scale */
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+  --color-teal-950: #0d3f3a;
+
+  /* Slate Color Scale */
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+
+  /* Red Color Scale */
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+
+  /* Font Families */
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-display: Inter, sans-serif;
+}
