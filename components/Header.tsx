@@ -49,9 +49,9 @@ export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick, is
                 </button>
 
                 <nav className={`hidden md:flex items-center gap-6`}>
-                    <a href="#" className={`${textClasses} font-medium transition`}>How it Works</a>
-                    <a href="#" className={`${textClasses} font-medium transition`}>Our Science</a>
-                    <a href="#" className={`${textClasses} font-medium transition`}>Partners</a>
+                    <a href="#how-it-works" className={`${textClasses} font-medium transition`}>How it Works</a>
+                    <a href="#our-science" className={`${textClasses} font-medium transition`}>Our Science</a>
+                    <a href="#partners" className={`${textClasses} font-medium transition`}>Partners</a>
                 </nav>
 
                 <div className="hidden md:flex items-center gap-2">
@@ -84,9 +84,9 @@ export const Header: React.FC<HeaderProps> = ({ theme, setTheme, onLogoClick, is
             {mobileMenuOpen && (
                 <nav className="md:hidden mt-4 pb-4 border-t border-energetic-green/20">
                     <div className="flex flex-col space-y-3 pt-4">
-                        <a href="#" className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>How it Works</a>
-                        <a href="#" className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>Our Science</a>
-                        <a href="#" className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>Partners</a>
+                        <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>How it Works</a>
+                        <a href="#our-science" onClick={() => setMobileMenuOpen(false)} className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>Our Science</a>
+                        <a href="#partners" onClick={() => setMobileMenuOpen(false)} className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green`}>Partners</a>
                         <button
                             onClick={toggleTheme}
                             className={`${textClasses} py-2 px-3 rounded transition focus:outline-none focus:ring-2 focus:ring-energetic-green text-left flex items-center gap-2`}
