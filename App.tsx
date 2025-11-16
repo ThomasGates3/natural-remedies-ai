@@ -75,16 +75,16 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-teal-950 text-teal-900 dark:text-white font-sans transition-colors duration-300">
-            <Header theme={theme} setTheme={setTheme} onLogoClick={handleLogoClick} />
-
+        <div className="min-h-screen bg-white dark:bg-dark-green-content text-teal-900 dark:text-text-light font-sans transition-colors duration-300">
             {!hasSearched ? (
-                <>
+                <div className="relative">
+                    <Header theme={theme} setTheme={setTheme} onLogoClick={handleLogoClick} isLanding={true} />
                     <LandingPage onSearch={handleSearch} isLoading={isLoading} />
                     <Footer />
-                </>
+                </div>
             ) : (
                 <>
+                    <Header theme={theme} setTheme={setTheme} onLogoClick={handleLogoClick} isLanding={false} />
                     <main className="container mx-auto p-4 md:p-6 lg:p-8">
                         <div className="max-w-4xl mx-auto text-center mb-8">
                             <h1 className="text-4xl md:text-5xl font-bold text-teal-900 dark:text-white mb-2">Your Remedies</h1>
