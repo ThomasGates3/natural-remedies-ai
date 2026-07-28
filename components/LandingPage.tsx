@@ -19,13 +19,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSearch, isLoading })
     <div className="min-h-screen bg-white dark:bg-dark-green-content text-gray-900 dark:text-text-light font-display">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-bright-accent/50 to-white dark:from-energetic-green/10 dark:to-dark-green-bg -z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-bright-accent/50 to-white dark:from-transparent dark:to-transparent -z-10"></div>
         <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-4xl md:text-6xl font-extrabold text-dark-green dark:text-text-light tracking-tighter leading-tight">
+          <span className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest border border-teal-400/30 text-teal-600 dark:text-teal-300">
+            <span className="size-1.5 rounded-full bg-teal-400 animate-pulse"></span>
+            AI wellness discovery
+          </span>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-tight text-dark-green dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-br dark:from-white dark:via-teal-200 dark:to-teal-400">
             Find Natural Remedies, Instantly.
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-700 dark:text-text-muted">
-            Describe your symptoms and let our AI discover personalized, natural solutions for your well-being.
+            Describe your symptoms and let our AI map them to researched, natural solutions — with instructions, ratings and safety caveats.
           </p>
 
           {/* Search Input */}

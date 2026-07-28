@@ -6,13 +6,14 @@ import { RemedyComparisonCards } from './RemedyComparisonCards';
 
 interface RemedyListProps {
     remedies: Remedy[];
+    isSample?: boolean;
     isLoading: boolean;
     error: string | null;
     toggleFavorite: (remedy: Remedy) => void;
     isFavorite: (remedy: Remedy) => boolean;
 }
 
-export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, error, toggleFavorite, isFavorite }) => {
+export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isSample, isLoading, error, toggleFavorite, isFavorite }) => {
     if (isLoading) {
         return (
             <div className="space-y-6">
@@ -47,7 +48,23 @@ export const RemedyList: React.FC<RemedyListProps> = ({ remedies, isLoading, err
 
     return (
         <div>
-            <h2 className="text-3xl font-bold mb-6 text-teal-900 dark:text-teal-100">AI-Powered Recommendations</h2>
+            <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100">
+                    {isSample ? 'Example Recommendations' : 'AI-Powered Recommendations'}
+                </h2>
+                <span className="text-[10px] uppercase tracking-widest font-mono px-2 py-1 rounded-full border border-teal-400/40 text-teal-600 dark:text-teal-300">
+                    {isSample ? 'Demo data' : 'Gemini 2.5'}
+                </span>
+            </div>
+            {isSample ? (
+                <p className="mb-6 text-sm text-amber-700 dark:text-amber-300">
+                    No API key configured — showing curated example remedies, not live AI output. Add a server-side key to enable personalized results.
+                </p>
+            ) : (
+                <p className="mb-6 text-sm text-teal-700/80 dark:text-teal-300/80">
+                    Generated from traditional-use and peer-reviewed evidence. Ratings are AI estimates — verify with a professional.
+                </p>
+            )}
             <div className="space-y-6">
                 {remedies.map((remedy) => (
                     <RemedyCard

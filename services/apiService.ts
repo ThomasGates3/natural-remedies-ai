@@ -1,34 +1,32 @@
-import { Remedy, GeminiRemedyResponse } from '../types';
-import { getRemediesDirectFromGemini } from './geminiService';
+import { Remedy } from '../types';
+import { SAMPLE_REMEDIES } from './sampleRemedies';
 
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
-const USE_DIRECT_API = !API_ENDPOINT; // Fall back to direct Gemini API if no backend endpoint
+export interface RemedyResult {
+    remedies: Remedy[];
+    sample: boolean; // true = clearly-labeled example data, not live AI output
+}
 
-export const getRemedies = async (symptoms: string): Promise<Remedy[]> => {
+// The Gemini key lives ONLY on the server. The browser calls our own
+// serverless endpoint (/api/remedies) and never sees the key.
+export const getRemedies = async (symptoms: string): Promise<RemedyResult> => {
     try {
-        // In development without a backend, use direct Gemini API
-        if (USE_DIRECT_API) {
-            return await getRemediesDirectFromGemini(symptoms);
-        }
-
-        // In production, use Cloud Run backend
-        const response = await fetch(`${API_ENDPOINT}/api/remedies`, {
+        // Empty base = same-origin (Vercel-style). On GCP the frontend is on a
+        // different domain than the Cloud Run API, so VITE_API_ENDPOINT points at it.
+        const base = import.meta.env.VITE_API_ENDPOINT ?? '';
+        const response = await fetch(`${base}/api/remedies`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ symptoms })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ symptoms }),
         });
 
-        if (!response.ok) {
-            throw new Error(`API error: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
 
-        const data: GeminiRemedyResponse = await response.json();
-        return data.remedies || [];
-
+        const data = await response.json();
+        return { remedies: data.remedies || [], sample: !!data.sample };
     } catch (error) {
-        console.error("Error fetching remedies from API:", error);
-        throw new Error("Failed to communicate with the API. Please ensure the backend is running or add VITE_API_ENDPOINT to .env.local.");
+        // No backend reachable (e.g. plain `vite` dev with no serverless runtime):
+        // fall back to labeled example data instead of erroring.
+        console.warn('Backend unavailable, showing example remedies:', error);
+        return { remedies: SAMPLE_REMEDIES, sample: true };
     }
 };

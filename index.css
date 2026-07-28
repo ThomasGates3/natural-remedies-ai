@@ -1,44 +1,41 @@
 @import "tailwindcss";
 
 @theme {
-  /* Light Mode Colors */
-  --color-energetic-green: #34D399;
-  --color-bright-accent: #A7F3D0;
-  --color-dark-green: #064E3B;
-  --color-background-light: #F0FDF4;
+  /* ---- Futuristic-but-warm wellness palette (near-black + electric cyan) ---- */
+  --color-energetic-green: #22D3EE;   /* primary accent (cyan) */
+  --color-bright-accent: #67E8F9;
+  --color-dark-green: #22D3EE;         /* used as solid accent bg/text */
+  --color-background-light: #F0FDFF;
 
-  /* Dark Mode Colors */
-  --color-dark-green-bg: #064E3B;
-  --color-dark-green-content: #043A2E;
-  --color-background-dark: #022C22;
-  --color-text-light: #F0FDF4;
-  --color-text-dark: #A7F3D0;
-  --color-text-muted: #6EE7B7;
-  --color-secondary: #f97316;
+  /* Dark surfaces */
+  --color-dark-green-bg: #10151F;
+  --color-dark-green-content: #0B0F17;
+  --color-background-dark: #05070B;
+  --color-text-light: #EAF7FB;
+  --color-text-dark: #22D3EE;
+  --color-text-muted: #8FB6C4;
+  --color-secondary: #A78BFA;
 
-  /* Light Mode Text Colors */
-  --color-light-text: #1F2937;
-  --color-light-text-muted: #6B7280;
+  --color-light-text: #0B0F17;
+  --color-light-text-muted: #475569;
 
-  /* Primary Color Scale */
-  --color-primary-light: #22c55e;
-  --color-primary: #16a34a;
-  --color-primary-dark: #15803d;
+  --color-primary-light: #67E8F9;
+  --color-primary: #22D3EE;
+  --color-primary-dark: #0891B2;
 
-  /* Teal Color Scale */
-  --color-teal-50: #f0fdfa;
-  --color-teal-100: #ccfbf1;
-  --color-teal-200: #99f6e4;
-  --color-teal-300: #5eead4;
-  --color-teal-400: #2dd4bf;
-  --color-teal-500: #14b8a6;
-  --color-teal-600: #0d9488;
-  --color-teal-700: #0f766e;
-  --color-teal-800: #115e59;
-  --color-teal-900: #134e4a;
-  --color-teal-950: #0d3f3a;
+  /* Teal scale remapped to cyan + deep-space surfaces */
+  --color-teal-50: #ECFEFF;
+  --color-teal-100: #CFFAFE;
+  --color-teal-200: #A5F3FC;
+  --color-teal-300: #7DD3E8;
+  --color-teal-400: #22D3EE;
+  --color-teal-500: #06B6D4;
+  --color-teal-600: #0891B2;
+  --color-teal-700: #0E7490;
+  --color-teal-800: #1B2637;
+  --color-teal-900: #111827;
+  --color-teal-950: #0B0F17;
 
-  /* Slate Color Scale */
   --color-slate-200: #e2e8f0;
   --color-slate-300: #cbd5e1;
   --color-slate-400: #94a3b8;
@@ -46,11 +43,54 @@
   --color-slate-700: #334155;
   --color-slate-800: #1e293b;
 
-  /* Red Color Scale */
   --color-red-400: #f87171;
   --color-red-500: #ef4444;
 
-  /* Font Families */
-  --font-sans: Inter, system-ui, sans-serif;
-  --font-display: Inter, sans-serif;
+  --font-sans: "Space Grotesk", system-ui, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  /* Ambient deep-space glow behind the whole app in dark mode */
+  html.dark body {
+    background-color: #05070B;
+    background-image:
+      radial-gradient(60rem 60rem at 15% -10%, rgba(34, 211, 238, 0.14), transparent 60%),
+      radial-gradient(50rem 50rem at 100% 0%, rgba(167, 139, 250, 0.12), transparent 55%),
+      radial-gradient(40rem 40rem at 50% 120%, rgba(34, 211, 238, 0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  html.dark ::selection { background: rgba(34, 211, 238, 0.3); }
+
+  /* Slim cyan scrollbar */
+  html.dark * { scrollbar-width: thin; scrollbar-color: #164e63 transparent; }
+  html.dark ::-webkit-scrollbar { width: 10px; height: 10px; }
+  html.dark ::-webkit-scrollbar-thumb { background: #164e63; border-radius: 9999px; }
+}
+
+@layer utilities {
+  /* Glassmorphism for surface cards in dark mode */
+  html.dark .dark\:bg-dark-green-content,
+  html.dark .dark\:bg-teal-950,
+  html.dark [class*="dark:bg-teal-900"],
+  html.dark [class*="dark:bg-dark-green-bg"] {
+    background-color: rgba(17, 24, 39, 0.55) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: rgba(34, 211, 238, 0.14);
+  }
+
+  /* Soft cyan glow on primary interactive elements */
+  html.dark button:not([disabled]):hover,
+  html.dark input:focus,
+  html.dark textarea:focus {
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35), 0 0 24px -4px rgba(34, 211, 238, 0.5);
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .animate-fadeIn { animation: fadeIn 0.5s ease both; }
+
+  @keyframes floatGlow { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+  .animate-pulse { animation: floatGlow 2.2s ease-in-out infinite; }
 }

@@ -38,9 +38,6 @@ jobs:
       - name: Setup Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Build React app
-        run: npm install && npm run build
-
       - name: Configure Docker authentication
         run: |
           gcloud auth configure-docker us-east1-docker.pkg.dev
@@ -63,6 +60,21 @@ jobs:
             --image=${IMAGE_NAME} \
             --update-env-vars=GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
             --allow-unauthenticated
+
+      - name: Capture Cloud Run service URL
+        run: |
+          API_URL=$(gcloud run services describe natural-remedies-ai-api-${ENVIRONMENT} \
+            --project=${GCP_PROJECT_ID} \
+            --region=${GCP_REGION} \
+            --format='value(status.url)')
+          echo "Cloud Run URL: ${API_URL}"
+          echo "API_URL=${API_URL}" >> $GITHUB_ENV
+
+      # Built AFTER Cloud Run so the live API URL is known and baked into the bundle.
+      - name: Build React app
+        env:
+          VITE_API_ENDPOINT: ${{ env.API_URL }}
+        run: npm install && npm run build
 
       - name: Upload frontend to Cloud Storage
         continue-on-error: true

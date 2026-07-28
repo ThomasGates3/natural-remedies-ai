@@ -15,12 +15,13 @@ const getInitialTheme = (): 'light' | 'dark' => {
     if (typeof window === 'undefined') return 'light';
     const stored = window.localStorage.getItem('theme');
     if (stored === 'dark' || stored === 'light') return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'dark';
 };
 
 const App: React.FC = () => {
     const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', getInitialTheme());
     const [remedies, setRemedies] = useState<Remedy[]>([]);
+    const [isSample, setIsSample] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [history, setHistory] = useLocalStorage<HistoryItem[]>('remedyHistory', []);
@@ -46,7 +47,8 @@ const App: React.FC = () => {
 
         try {
             const result = await getRemedies(symptoms);
-            setRemedies(result);
+            setRemedies(result.remedies);
+            setIsSample(result.sample);
 
             const newHistoryItem: HistoryItem = { id: Date.now(), symptoms };
             setHistory(prevHistory => [newHistoryItem, ...prevHistory.filter(item => item.symptoms !== symptoms)].slice(0, 10));
@@ -105,6 +107,7 @@ const App: React.FC = () => {
                             <div className="lg:col-span-6">
                                 <RemedyList
                                     remedies={remedies}
+                                    isSample={isSample}
                                     isLoading={isLoading}
                                     error={error}
                                     toggleFavorite={toggleFavorite}
